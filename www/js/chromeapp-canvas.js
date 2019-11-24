@@ -268,29 +268,27 @@ function openSocket() {
 /**
  * Saves form state to chrome.storage.local
  * @param $form to save in localstorage(jQuery object)
- * @deprecated TODO: Check how storage works with Cordova
  */
 function saveFormState($form) {
-    /*const formData = JSON.stringify($form.serializeArray());
-    chrome.storage.local.set({'form': formData});*/
+    const formData = JSON.stringify($form.serializeArray());
+    window.localStorage.setItem({'form': formData});
   }
   
-  /**
-   * Loads form state from chrome.storage.local
-   * @param $form to load from localstorage(jQuery object)
-   * @deprecated TODO: Check how storage works with Cordova
-   */
-  function loadFormState($form) {
-    /*const formData = chrome.storage.local.get('form', function (result) {
-        if (typeof result.form === "undefined") return;
-        formKeyValue = JSON.parse(result.form);
-        $.each( formKeyValue, function( key, value ) {
-            const selector = $('input[name="'+value.name+'"]');
-            selector.val(value.value);
-        });
-    });*/
-    
-  }
+/**
+* Loads form state from chrome.storage.local
+* @param $form to load from localstorage(jQuery object)
+*/
+function loadFormState($form) {
+const formData = window.localStorage.getItem('form', function (result) {
+    if (typeof result.form === "undefined") return;
+    formKeyValue = JSON.parse(result.form);
+    $.each( formKeyValue, function( key, value ) {
+        const selector = $('input[name="'+value.name+'"]');
+        selector.val(value.value);
+    });
+});
+}
+
 function cleanTransmission(){
     transmission.innerHTML = t_empty;
     transmission.className = 'white';
