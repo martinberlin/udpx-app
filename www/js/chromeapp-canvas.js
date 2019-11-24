@@ -74,11 +74,7 @@ document.addEventListener('deviceready', function(){
             port.value = oldPort;
             break;
             case 'pixbro':
-                if (isAndroid){
-                    transmission.className = 'red';
-                    transmission.innerHTML = 'NOTE: Brotli compression will not run in Android';
-                }
-                port.value = oldPort;
+            port.value = oldPort;
             break;
         }
     };
