@@ -30,7 +30,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <div id="transmission"></div>
+                        <div id="transmission">bytes transmitted should be < 1470</div>
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
 
                 <div class="form-group row">
                         <div class="col-xs-4">
-                            <label for="video_select">Video settings</label>
+                            <label for="video_select">Examples:</label>
                         <select id="video_select" class="form-control form-control-sm">
                             <option value="">Select test video</option>
                             <option value="01.mp4">Screen-test</option>
@@ -97,19 +97,19 @@
                             maxlength="3" size="3" value="1.4" required>
                     </div>
                     <div class="col-xs-4">
-                        <label for="v_brightness">brightness * N</label>
+                        <label for="v_brightness">bright * N</label>
                         <input id="v_brightness" name="v_brightness" type="number" class="form-control form-control-sm"
                             maxlength="3" min="0.1" max="1" value="0.1" title="0.1 = 10% / 1 = 100%" required>
                     </div>
                 </div>
                 <div class="form-group row">
                         <div class="col-xs-4">
-                                <label for="millis_frame">1 frame x ms</label>
+                                <label for="millis_frame">ms/Frame</label>
                                 <input id="millis_frame" name="millis_frame" type="number" class="form-control form-control-sm"
                                     maxlength="3" value="100" required>
                         </div>
                         <div class="col-xs-4">
-                            <label for="bro_quality">Brotli quality</label>
+                            <label for="bro_quality">Brotli Q</label>
                                 <input id="bro_quality" name="bro_quality" type="number" class="form-control form-control-sm"
                                     maxlength="1" min="1" max="11" value="4" required>
                         </div>

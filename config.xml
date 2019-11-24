@@ -3,7 +3,7 @@
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>UDPX</name>
+    <name>video</name>
     <description>
         Video is rendered to canvas and send via UDP pixels protocol to addressable Leds
     </description>
@@ -24,6 +24,12 @@
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:usesCleartextTraffic="true" />
         </edit-config>
+        <resource-file src="res/values/colors.xml" target="/app/src/main/res/values/colors.xml" />
+        <icon background="@color/background" density="mdpi" foreground="res/icon/udpx-48.png" />
+        <icon background="@color/background" density="hdpi" foreground="res/icon/udpx-72.png" />
+        <icon background="@color/background" density="xhdpi" foreground="res/icon/udpx-96.png" />
+        <icon background="@color/background" density="xxhdpi" foreground="res/icon/udpx-144.png" />
+        <icon background="@color/background" density="xxxhdpi" foreground="res/icon/udpx-192.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
