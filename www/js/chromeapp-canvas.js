@@ -109,20 +109,20 @@ function sendUdp(bytesToPost) {
             send.set(headerBytes);
             send.set(compressed, headerBytes.length);
             t1 = performance.now();
-            chrome.sockets.udp.send(socketId, send, ip.value, parseInt(port.value), function(sendInfo) {
+            chrome.sockets.udp.send(socketId, send.buffer, ip.value, parseInt(port.value), function(sendInfo) {
                 transmission.innerText = "Took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" compressed bytes ";
             });
         break;
         case 'pixbro':
             compressed = compress(bytesToPost, bytesToPost.length, quality.value, lg_window_size);
             t1 = performance.now();
-            chrome.sockets.udp.send(socketId, compressed, ip.value, parseInt(port.value), function(sendInfo) {
+            chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
                     transmission.innerText = "Took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" bro compressed bytes ";
             });
         break;
         
         default:
-            chrome.sockets.udp.send(socketId, bytesToPost, ip.value, parseInt(port.value), function(sendInfo) {
+            chrome.sockets.udp.send(socketId, bytesToPost.buffer, ip.value, parseInt(port.value), function(sendInfo) {
                     transmission.innerText = "Sending "+sendInfo.bytesSent+" bytes";
             });
 
