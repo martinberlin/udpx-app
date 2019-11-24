@@ -1,26 +1,30 @@
 {
-  "name": "helloworld",
-  "displayName": "HelloCordova",
+  "name": "UDPX",
+  "displayName": "udpx client app",
   "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "description": "Video is rendered to canvas and send via UDP pixels protocol to addressable Leds",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "ecosystem:cordova"
+    "esp32",
+    "leds"
   ],
-  "author": "Apache Cordova Team",
+  "author": "martin@luckycloud.de",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^8.1.0"
+    "cordova-android": "^8.1.0",
+    "cordova-plugin-chrome-apps-common": "^1.0.7",
+    "cordova-plugin-chrome-apps-sockets-udp": "git+https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-sockets-udp.git"
   },
   "devDependencies": {
     "cordova-plugin-whitelist": "^1.3.4"
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-chrome-apps-sockets-udp": {}
     },
     "platforms": [
       "android"
