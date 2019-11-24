@@ -22,7 +22,8 @@ unitH = parseInt(v_height.value);
 let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('deviceready', function(){
+    console.log('deviceready starts');
     openSocket();
     cleanTransmission();
     /**
@@ -223,6 +224,8 @@ function draw(v,c,w,h) {
 }
 
 function openSocket() {
+    console.log('openSocket() chrome.sockets.udp.create');
+
     chrome.sockets.udp.create({}, function(socketInfo) {
         // The socket is created, now we can send some data
         socketId = socketInfo.socketId;
