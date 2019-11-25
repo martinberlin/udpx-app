@@ -3,9 +3,10 @@
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>video</name>
+    <name short="udpx">video</name>
     <description>
-        Video is rendered to canvas and send via UDP pixels protocol to addressable Leds
+        Video is rendered to canvas and send via UDP Pixels protocol to addressable Leds.
+        Firmware for ESP32: https://github.com/martinberlin/udpx
     </description>
     <author email="martin@luckycloud.de" href="http://udpx.fasani.de">
         udpx Team
@@ -15,9 +16,6 @@
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
         <allow-intent href="market:*" />
