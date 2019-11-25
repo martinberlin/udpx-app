@@ -21,10 +21,10 @@ ch = parseInt(v_height.value)*parseInt(v_units.value),
 unitH = parseInt(v_height.value);
 let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
+let storage = window.localStorage;
 
 document.addEventListener('deviceready', function(){
     openSocket();
-    cleanTransmission();
     /**
      * Load form state from localstorage and set handler
      * to save form state on form change ( @hputzek )
@@ -267,22 +267,22 @@ function openSocket() {
  */
 function saveFormState($form) {
     const formData = JSON.stringify($form.serializeArray());
-    window.localStorage.setItem({'form': formData});
-  }
+    storage.setItem('form', formData);
+}
   
 /**
 * Loads form state from chrome.storage.local
 * @param $form to load from localstorage(jQuery object)
 */
 function loadFormState($form) {
-const formData = window.localStorage.getItem('form', function (result) {
-    if (typeof result.form === "undefined") return;
-    formKeyValue = JSON.parse(result.form);
+    const formData = storage.getItem('form');
+    if (formData == null || typeof formData !== 'string') return;
+
+    formKeyValue = JSON.parse(formData);
     $.each( formKeyValue, function( key, value ) {
         const selector = $('input[name="'+value.name+'"]');
         selector.val(value.value);
     });
-});
 }
 
 function cleanTransmission(){
