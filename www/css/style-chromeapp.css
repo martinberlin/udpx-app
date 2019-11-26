@@ -58,3 +58,10 @@
 .error {
     background-color: red;
 }
+
+# Browse file
+label.file-upload{position:relative;overflow:hidden}
+label.file-upload input[type=file]{
+position:absolute;top:0;right:0;min-width:100%;min-height:100%;
+text-align:right;filter:alpha(opacity=0);opacity:0;outline:0;background:#fff;cursor:inherit;display:block
+}
