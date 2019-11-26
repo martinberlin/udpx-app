@@ -22,9 +22,15 @@ unitH = parseInt(v_height.value);
 let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
+let isSocketOpen = false;
 
 document.addEventListener('deviceready', function(){
-    openSocket();
+
+    if (validateIp(ip.value, true)) {
+      openSocket();
+    }
+
+    //console.log("boot socket:", isSocketOpen);
     /**
      * Load form state from localstorage and set handler
      * to save form state on form change ( @hputzek )
@@ -83,8 +89,13 @@ document.addEventListener('deviceready', function(){
     canvas.height = parseInt(v_height.value)*parseInt(v_units.value);
 
     v.addEventListener('play', function(){
+      if (isSocketOpen) {
         draw(this,context,cw,ch);
+      } else {
+        openSocket();
+      }
     },false);
+
     v.addEventListener('pause', function(){
         cleanTransmission();
     },false);
@@ -148,7 +159,6 @@ function convertChannel(pixels) {
                 pixels[inv] = pixelsInvertedCopy[invIndex];
                 invIndex++
             }
-            //console.log("x:"+x+" Inverted line:"+lineCount+ " inv:"+inv, pixels);
         }
         lineCount++;
     }
@@ -189,6 +199,11 @@ function convertChannel(pixels) {
         bytesToPost[bi] = Math.round(pixels[k][1]*v_brightness.value);bi++;
         bytesToPost[bi] = Math.round(pixels[k][2]*v_brightness.value);bi++;
     }
+
+    if (!isSocketOpen) {
+      transmission.innerHTML = '<span color="red">Socket is closed: Add IP</span>';
+      return;
+    }
     sendUdp(bytesToPost);
   }
 
@@ -224,10 +239,12 @@ function openSocket() {
         chrome.sockets.udp.bind(socketId,
             "0.0.0.0", 0, function(result) {
               if (result < 0) {
-                console.log("Error binding socket.");
+                console.log("Error binding socket");
+                isSocketOpen = false;
                 return;
               }
-    });
+              isSocketOpen = true;
+        });
     });
 }
 
@@ -288,4 +305,18 @@ function loadFormState($form) {
 function cleanTransmission(){
     transmission.innerHTML = t_empty;
     transmission.className = 'white';
+}
+
+function validateIp(str, verbose) {
+    const octet = '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)';
+    const regex = new RegExp(`^${octet}\\.${octet}\\.${octet}\\.${octet}$`);
+    validIp = regex.test(str);
+
+     if (validIp) {
+         if (verbose) transmission.innerText = 'Valid IP';
+     } else {
+          transmission.innerHTML = '<span color="red">Not a valid IP</span>';
+          $('.nav-tabs a[href="#cs"]').tab('show');
+     }
+     return validIp;
 }
