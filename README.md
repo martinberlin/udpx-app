@@ -34,14 +34,14 @@ In Alixpress there is a firma called BTF-Lighting that has awesome 22x22 or 44x1
 1. https://www.aliexpress.com/item/32945260788.html
 2. https://www.amazon.com/BTF-LIGHTING-0-48ft0-48ft-Flexible-Individually-addressable/dp/B01DC0IOCK/
 
-In Amazon you can find this too, but not so big, and probably more expensive. Note that the data flow on most of this panels is:
+In Amazon you can find this too, but not so big, and probably more expensive. Note that the data flow on the horizontal lines on most of this panels is like this:
 
---> right
-<-- left
---> and so on.
+1. --> right
+2. <-- left (pixels in this one should be reversed before sending)
+3. --> and so on.
 
 So this App takes care of doing the sort in your client before sending the bytes. It supports only this data flow at the moment, so if you are planning to build a video wall using linear Led stripes make sure to follow suit.
-Is actually the most easy way to do it, otherwise you should wire the data from right corner to the left in every line jump, so for simplicity is done this way.
+Is actually the most easy way to do it, otherwise you should wire the data from right corner on every end of line to the left of the next one, so for simplicity is done this way.
 Make sure to connect this properly to a proper 5V power supply (USB is ok for testing only) and the data wire on the middle to ESP32 GPIO 19 as specified in UDPX Firmware.
 
 ## Licensing
