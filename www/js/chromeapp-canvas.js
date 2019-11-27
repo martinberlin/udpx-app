@@ -101,7 +101,6 @@ document.addEventListener('deviceready', function(){
     v.addEventListener('pause', function(){
         cleanTransmission();
     },false);
-    // End - EventListeners - deviceready bootstrap
 
     let canvasImage = new Image();
     canvasImage.onload = function() {
@@ -111,7 +110,11 @@ document.addEventListener('deviceready', function(){
 
     let cameraApp = {
        start: function(image_url) {
+        if (!isSocketOpen) {
+           openSocket();
+        }
         canvasImage.src = image_url;
+        video.src = image_url;
        },
        error: function(msg) {
         transmission.innerText = msg;
