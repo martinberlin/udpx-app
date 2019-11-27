@@ -15,6 +15,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "cordova-android": "^8.1.0",
+    "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-chrome-apps-common": "^1.0.7",
     "cordova-plugin-chrome-apps-sockets-udp": "git+https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-sockets-udp.git"
   },
@@ -24,7 +25,8 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-chrome-apps-sockets-udp": {}
+      "cordova-plugin-chrome-apps-sockets-udp": {},
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "android"

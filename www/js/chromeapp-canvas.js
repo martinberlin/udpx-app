@@ -25,6 +25,14 @@ let storage = window.localStorage;
 let isSocketOpen = false;
 
 document.addEventListener('deviceready', function(){
+    let cameraConfig = {
+      quality:50,
+      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      mediaType: Camera.MediaType.VIDEO,
+      encodingType: Camera.EncodingType.JPEG,
+      cameraDirection: Camera.Direction.BACK
+    };
     // Start - EventListeners
     loadFormState($('#main-form'))
     $("#main-form input").change(function() {
@@ -94,6 +102,28 @@ document.addEventListener('deviceready', function(){
         cleanTransmission();
     },false);
     // End - EventListeners - deviceready bootstrap
+
+    let canvasImage = new Image();
+    canvasImage.onload = function() {
+        context.drawImage(this, 0, 0, canvas.width, canvas.height);
+        drawImage(context,cw,ch);
+    }
+
+    let cameraApp = {
+       start: function(image_url) {
+        canvasImage.src = image_url;
+        video.src = image_url;
+        //console.log(image_url);
+       },
+       error: function(msg) {
+        transmission.innerText = msg;
+       }
+    }
+
+    document.getElementById('v-open').addEventListener('click', function () {
+        navigator.camera.getPicture(cameraApp.start, cameraApp.error, cameraConfig)
+    });
+
 },false);
 
 function sendUdp(bytesToPost) {
@@ -226,6 +256,28 @@ function draw(v,c,w,h) {
     convertChannel(pixels);
     
     setTimeout(draw,millis_frame.value,v,c,w,h);
+}
+
+function drawImage(c,w,h) {
+    c.filter = "contrast("+contrast.value+")";
+    c.drawImage(v,0,0,w,h);
+    // Read image from canvas
+    imageObj = c.getImageData(0, 0, parseInt(v_width.value), parseInt(v_height.value)*parseInt(v_units.value));
+    pData = imageObj.data;
+    let pixels = new Array;
+    // Byte progression is R,G,B,A (We discard the 4th value)
+   for (var i = 1; i <= pData.length+3; i ++) {
+
+        if (i % 4 === 0) {
+            pixels.push([
+                pData[i-4],
+                pData[i-3],
+                pData[i-2],
+            ]);
+            continue;
+        }
+    }
+    convertChannel(pixels);
 }
 
 function openSocket() {

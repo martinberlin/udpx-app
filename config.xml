@@ -28,9 +28,14 @@
         <icon background="@color/background" density="xhdpi" foreground="res/icon/udpx-96.png" />
         <icon background="@color/background" density="xxhdpi" foreground="res/icon/udpx-144.png" />
         <icon background="@color/background" density="xxxhdpi" foreground="res/icon/udpx-192.png" />
+
+        <feature name="Camera">
+            <param name="android-package" value="cordova-plugin-media-custom" />
+        </feature>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+
 </widget>
