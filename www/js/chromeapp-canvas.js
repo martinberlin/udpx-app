@@ -112,8 +112,6 @@ document.addEventListener('deviceready', function(){
     let cameraApp = {
        start: function(image_url) {
         canvasImage.src = image_url;
-        video.src = image_url;
-        //console.log(image_url);
        },
        error: function(msg) {
         transmission.innerText = msg;
