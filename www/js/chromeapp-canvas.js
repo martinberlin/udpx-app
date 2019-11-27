@@ -25,20 +25,15 @@ let storage = window.localStorage;
 let isSocketOpen = false;
 
 document.addEventListener('deviceready', function(){
-
-    if (validateIp(ip.value, true)) {
-      openSocket();
-    }
-
-    //console.log("boot socket:", isSocketOpen);
-    /**
-     * Load form state from localstorage and set handler
-     * to save form state on form change ( @hputzek )
-     */
+    // Start - EventListeners
     loadFormState($('#main-form'))
     $("#main-form input").change(function() {
       saveFormState($(this).closest('form'));
     });
+
+    if (validateIp(ip.value, true)) {
+      openSocket();
+    }
 
     video_select.onchange = function() {
         if (video_select.value !== '') {
@@ -89,16 +84,16 @@ document.addEventListener('deviceready', function(){
     canvas.height = parseInt(v_height.value)*parseInt(v_units.value);
 
     v.addEventListener('play', function(){
-      if (isSocketOpen) {
-        draw(this,context,cw,ch);
-      } else {
+      if (!isSocketOpen) {
         openSocket();
       }
+      draw(this,context,cw,ch);
     },false);
 
     v.addEventListener('pause', function(){
         cleanTransmission();
     },false);
+    // End - EventListeners - deviceready bootstrap
 },false);
 
 function sendUdp(bytesToPost) {
