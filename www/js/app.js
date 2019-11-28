@@ -1,5 +1,4 @@
-// TODO: Read version from config.xml
-let VERSION = '1.0.3';
+let VERSION = '1.0.4';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -25,6 +24,17 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
+// typescript doesn't polyfill lib entries
+if (!Object.entries) {
+  Object.entries = function( obj ){
+    var ownProps = Object.keys( obj ),
+        i = ownProps.length,
+        resArray = new Array(i); // preallocate the Array
+    while (i--)
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+    return resArray;
+  };
+}
 
 // DOMContentLoaded   -> deviceready for cordova
 document.addEventListener('deviceready', function(){
@@ -337,7 +347,7 @@ function openSocket() {
  */
 function saveFormState() {
   const form = document.querySelector('form');
-  const data = Object.fromEntries(new FormData(form).entries());
+  const data = objectFromEntries(new FormData(form).entries());
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
 }
@@ -363,11 +373,28 @@ function validateIp(str, verbose) {
     const octet = '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)';
     const regex = new RegExp(`^${octet}\\.${octet}\\.${octet}\\.${octet}$`);
     validIp = regex.test(str);
-
      if (validIp) {
          if (verbose) transmission.innerText = 'Valid IP';
      } else {
           transmission.innerHTML = '<span color="red">Not a valid IP</span>';
      }
      return validIp;
+}
+
+// Polyfill for Object.fromEntries()
+function objectFromEntries(iter) {
+  const obj = {};
+  for (const pair of iter) {
+    if (Object(pair) !== pair) {
+      throw new TypeError('iterable for fromEntries should yield objects');
+    }
+    const { '0': key, '1': val } = pair;
+    Object.defineProperty(obj, key, {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: val,
+    });
+  }
+  return obj;
 }
