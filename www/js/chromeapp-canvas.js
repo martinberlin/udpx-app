@@ -1,3 +1,5 @@
+// TODO: Read version from config.xml
+let VERSION = '1.0.3';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -125,7 +127,7 @@ document.addEventListener('deviceready', function(){
     document.getElementById('v-open').addEventListener('click', function () {
         navigator.camera.getPicture(cameraApp.start, cameraApp.error, cameraConfig)
     });
-
+    document.getElementById('version').innerText = VERSION;
 },false);
 
 function sendUdp(bytesToPost) {
