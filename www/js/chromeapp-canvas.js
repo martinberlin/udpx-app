@@ -110,11 +110,12 @@ document.addEventListener('deviceready', function(){
 
     let cameraApp = {
        start: function(image_url) {
-        if (!isSocketOpen) {
-           openSocket();
-        }
-        canvasImage.src = image_url;
-        video.src = image_url;
+           video.src = '';
+           video.setAttribute('poster', image_url);
+            if (!isSocketOpen) {
+               openSocket();
+            }
+            canvasImage.src = image_url;
        },
        error: function(msg) {
         transmission.innerText = msg;
