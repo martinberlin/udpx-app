@@ -1,5 +1,5 @@
 // TODO: Read version from config.xml
-let VERSION = '1.0.3';
+let VERSION = '1.0.4';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -25,21 +25,23 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
-
-document.addEventListener('deviceready', function(){
-    let cameraConfig = {
+let mainForm = document.getElementById('main-form');
+// DOMContentLoaded   -> deviceready
+document.addEventListener('DOMContentLoaded', function(){
+    /*let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
       sourceType: Camera.PictureSourceType.CAMERA,
       mediaType: Camera.MediaType.VIDEO,
       encodingType: Camera.EncodingType.JPEG,
       cameraDirection: Camera.Direction.BACK
-    };
+    };*/
     // Start - EventListeners
-    loadFormState($('#main-form'))
-    $("#main-form input").change(function() {
-      saveFormState($(this).closest('form'));
-    });
+    loadFormState()
+
+    mainForm.onchange = function () {
+        saveFormState();
+    };
 
     if (validateIp(ip.value, true)) {
       openSocket();
@@ -333,24 +335,23 @@ function openSocket() {
  * Saves form state to chrome.storage.local
  * @param $form to save in localstorage(jQuery object)
  */
-function saveFormState($form) {
-    const formData = JSON.stringify($form.serializeArray());
-    storage.setItem('form', formData);
+function saveFormState() {
+  const form = document.querySelector('form');
+  const data = Object.fromEntries(new FormData(form).entries());
+  let formJson = JSON.stringify(data);
+  storage.setItem('form', formJson);
 }
   
 /**
 * Loads form state from chrome.storage.local
-* @param $form to load from localstorage(jQuery object)
 */
-function loadFormState($form) {
+function loadFormState() {
     const formData = storage.getItem('form');
     if (formData == null || typeof formData !== 'string') return;
-
     formKeyValue = JSON.parse(formData);
-    $.each( formKeyValue, function( key, value ) {
-        const selector = $('input[name="'+value.name+'"]');
-        selector.val(value.value);
-    });
+    for (var item in formKeyValue) {
+        document.getElementsByName(item)[0].value = formKeyValue[item];
+    }
 }
 
 function cleanTransmission(){
@@ -367,7 +368,6 @@ function validateIp(str, verbose) {
          if (verbose) transmission.innerText = 'Valid IP';
      } else {
           transmission.innerHTML = '<span color="red">Not a valid IP</span>';
-          $('.nav-tabs a[href="#cs"]').tab('show');
      }
      return validIp;
 }
