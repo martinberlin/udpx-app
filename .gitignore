@@ -12,4 +12,5 @@ js/**/*.js
 js/**/*.js.map
 # Android studio IDE
 .idea
-udpx.keystore
+app.keystore
+build.json
