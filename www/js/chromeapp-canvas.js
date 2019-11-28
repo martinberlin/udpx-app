@@ -1,5 +1,5 @@
 // TODO: Read version from config.xml
-let VERSION = '1.0.4';
+let VERSION = '1.0.3';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -25,21 +25,21 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
-let mainForm = document.getElementById('main-form');
-// DOMContentLoaded   -> deviceready
-document.addEventListener('DOMContentLoaded', function(){
-    /*let cameraConfig = {
+
+// DOMContentLoaded   -> deviceready for cordova
+document.addEventListener('deviceready', function(){
+    let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
       sourceType: Camera.PictureSourceType.CAMERA,
       mediaType: Camera.MediaType.VIDEO,
       encodingType: Camera.EncodingType.JPEG,
       cameraDirection: Camera.Direction.BACK
-    };*/
+    };
     // Start - EventListeners
     loadFormState()
 
-    mainForm.onchange = function () {
+    document.getElementById('main-form').onchange = function () {
         saveFormState();
     };
 
