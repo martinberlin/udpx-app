@@ -6,14 +6,18 @@
 
 Luckycloud cloudstorage hosts the latest APK builds, just download:
 
-[app-debug.apk](https://storage.luckycloud.de/d/0c007c42956746c186a1/?p=/android)
+[Latest signed APK release](https://storage.luckycloud.de/d/0c007c42956746c186a1/?p=/android/releases&mode=list)
 
 And install it on your Android phone after giving it the necessary permissions.
 
-This is my humble intent to build in the first version a very easy hybrid App using Cordova to send RGB pixels to ESP32 controllers.
-We are using canvas to render video, pixels are readed, compressed and send as binary data to the ESP32.
+This application sends RGB pixels to ESP32 controllers. We are using canvas to render video and read the pixels to be send as binary data to the ESP32.
 
-The ESP32 controllers should be running our UDPX Firmware or alternatively [OctoWifi firmware](https://github.com/spectrenoir06/OctoWifi-LEDs-Controller)
+To accomplish that mission the ESP32 controllers should be running our UDPX Firmware or alternatively [OctoWifi firmware](https://github.com/spectrenoir06/OctoWifi-LEDs-Controller)
+Protocols supported:
+
+   * Pixels
+   * RGB888
+   * BRO888
 
 iOS /iPad version is comming soon, also a Windows/Linux build, if you want to use it on your PC.
 If you need any other platform, feel free to clone this, and make it your own.
@@ -46,5 +50,5 @@ Make sure to connect this properly to a proper 5V power supply (USB is ok for te
 
 ## Licensing
 
-This App is open source and you can make it your own as long as you respective the copyright ownership of UDPX.
+This App is open source and you can make it your own as long as you respect the copyright ownership of UDPX.
 If you want to use it commercially is also no problem but please write a short message to see where it will be used so we can follow the project.
