@@ -8,7 +8,10 @@ Luckycloud cloudstorage hosts the latest APK builds, just download:
 
 [Latest signed APK release](https://storage.luckycloud.de/d/0c007c42956746c186a1/?p=/android/releases&mode=list)
 
-And install it on your Android phone after giving it the necessary permissions.
+And install it on your Android phone after giving it the necessary permissions. To try the stable version please don't install the APK manually, just go to the Play store and search for "udpx" or check this link:
+<a href="https://play.google.com/store/apps/details?id=io.cordova.udpx" />
+<img src="/examples/udpx-app-180x120.jpg" />
+[udpx esp32](https://play.google.com/store/apps/details?id=io.cordova.udpx)
 
 This application sends RGB pixels to ESP32 controllers. We are using canvas to render video and read the pixels to be send as binary data to the ESP32.
 
@@ -20,7 +23,7 @@ Protocols supported:
    * BRO888
 
 iOS /iPad version is comming soon, also a Windows/Linux build, if you want to use it on your PC.
-If you need any other platform, feel free to clone this, and make it your own.
+If you need any other platform, feel free to clone this, and make it your own. To check upcoming features just open the [Issues board](https://github.com/martinberlin/udpx-app/issues).
 
 ## UDPX ESP32 Firmware
 
