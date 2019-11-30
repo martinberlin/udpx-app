@@ -10,7 +10,7 @@ Luckycloud cloudstorage hosts the latest APK builds, just download:
 
 And install it on your Android phone after giving it the necessary permissions. To try the stable version please don't install the APK manually, just go to the Play store and search for "udpx" or check this link:
 <a href="https://play.google.com/store/apps/details?id=io.cordova.udpx" />
-<img src="/examples/udpx-app-180x120.jpg" />
+<img src="https://github.com/martinberlin/udpx/raw/master/examples/udpx-app-180x120.jpg" />
 [udpx esp32](https://play.google.com/store/apps/details?id=io.cordova.udpx)
 
 This application sends RGB pixels to ESP32 controllers. We are using canvas to render video and read the pixels to be send as binary data to the ESP32.
