@@ -1,4 +1,4 @@
-let VERSION = '1.0.4';
+let VERSION = '1.0.5';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -15,15 +15,15 @@ let ip = document.getElementById('esp32_ip'),
     transmission = document.getElementById('transmission'),
     quality = document.getElementById('bro_quality'),
     v_brightness = document.getElementById('v_brightness');
-let t_empty = '&#9633;';
 let socketId, oldPort = port.value; 
 let cw = parseInt(v_width.value),
-ch = parseInt(v_height.value)*parseInt(v_units.value),
-unitH = parseInt(v_height.value);
+    ch = parseInt(v_height.value)*parseInt(v_units.value),
+    unitH = parseInt(v_height.value);
 let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
+
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
   Object.entries = function( obj ){
@@ -49,13 +49,24 @@ document.addEventListener('deviceready', function(){
     // Start - EventListeners
     loadFormState()
 
-    document.getElementById('main-form').onchange = function () {
+    document.getElementById('main-form').onchange = function() {
         saveFormState();
     };
 
     if (validateIp(ip.value, true)) {
       openSocket();
     }
+
+    // Send udp message
+    document.getElementById('send_udp').onclick = function() {
+        udp_text = document.getElementById('udp_text').value;
+        udp_buf = str2buffer(udp_text);
+        console.log(udp_buf);
+        chrome.sockets.udp.send(socketId, udp_buf , ip.value, parseInt(port.value), function() {
+            transmission.innerText = "Sending "+ udp_text;
+        });
+        return false;
+    };
 
     video_select.onchange = function() {
         if (video_select.value !== '') {
@@ -323,8 +334,7 @@ function openSocket() {
   var playSelectedFile = function (event) {
     var file = this.files[0]
     var type = file.type
-    var videoNode = document.querySelector('video')
-    var canPlay = videoNode.canPlayType(type)
+    var canPlay = video.canPlayType(type)
     if (canPlay === '') canPlay = 'no'
     var message = 'Can play type "' + type + '": ' + canPlay
     var isError = canPlay === 'no'
@@ -335,7 +345,8 @@ function openSocket() {
     }
 
     var fileURL = URL.createObjectURL(file)
-    videoNode.src = fileURL
+    video.setAttribute('poster', '')
+    video.src = fileURL
   }
   var inputNode = document.querySelector('input')
   inputNode.addEventListener('change', playSelectedFile, false)
@@ -365,7 +376,7 @@ function loadFormState() {
 }
 
 function cleanTransmission(){
-    transmission.innerHTML = t_empty;
+    transmission.innerHTML = '';
     transmission.className = 'white';
 }
 
@@ -397,4 +408,13 @@ function objectFromEntries(iter) {
     });
   }
   return obj;
+}
+// source: http://stackoverflow.com/a/11058858
+function str2buffer(str) {
+  var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+  var bufView = new Int8Array(buf);
+  for (var i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
 }
