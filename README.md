@@ -4,18 +4,19 @@
 
 ## Android App latest builds
 
-Luckycloud cloudstorage hosts the latest APK builds, just download:
+If you want to test this fast using Android, just download and install the udpx app from Play store:
+<a href="https://play.google.com/store/apps/details?id=io.cordova.udpx" />
+<img src="/examples/udpx-app-180x120.jpg" />
+[udpx esp32](https://play.google.com/store/apps/details?id=io.cordova.udpx)
+
+
+Luckycloud cloudstorage hosts the latest APK builds, if you want to check latest unstable features first uninstall the App, and download:
 
 [Latest signed APK release](https://storage.luckycloud.de/d/0c007c42956746c186a1/?p=/android/releases&mode=list)
 
-And install it on your Android phone after giving it the necessary permissions. To try the stable version please don't install the APK manually,
-just go to the Play store and search for "udpx" or check this link:
-
-<a href="https://play.google.com/store/apps/details?id=io.cordova.udpx" />
-<img src="https://github.com/martinberlin/udpx/raw/master/examples/udpx-app-180x120.jpg" />
+And install it on your Android phone after giving it the necessary permissions. We recommend to use only the stable Play store versions.
 
 This application sends RGB pixels to ESP32 controllers. We are using canvas to render video and read the pixels to be send as binary data to the ESP32.
-
 To accomplish that mission the ESP32 controllers should be running our UDPX Firmware or alternatively [OctoWifi firmware](https://github.com/spectrenoir06/OctoWifi-LEDs-Controller)
 Protocols supported:
 
