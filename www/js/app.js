@@ -15,7 +15,7 @@ let ip = document.getElementById('esp32_ip'),
     transmission = document.getElementById('transmission'),
     quality = document.getElementById('bro_quality'),
     v_brightness = document.getElementById('v_brightness');
-let socketId, oldPort = port.value; 
+let socketId;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -100,15 +100,13 @@ document.addEventListener('deviceready', function(){
         switch (protocol.value) {
             case 'bro888':
             case 'rgb888':
-            oldPort = port.value;
-            port.value = '6454';
+                oldPort = port.value;
+                port.value = '6454';
             break;
-            case 'pixzip':
-            case 'pixels':
-            port.value = oldPort;
-            break;
-            case 'pixbro':
-            port.value = oldPort;
+            default:
+                if (typeof oldPort !== "undefined") {
+                    port.value = oldPort;
+                }
             break;
         }
     };
