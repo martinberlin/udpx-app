@@ -61,7 +61,6 @@ document.addEventListener('deviceready', function(){
     document.getElementById('send_udp').onclick = function() {
         udp_text = document.getElementById('udp_text').value;
         udp_buf = str2buffer(udp_text);
-        console.log(udp_buf);
         chrome.sockets.udp.send(socketId, udp_buf , ip.value, parseInt(port.value), function() {
             transmission.innerText = "Sending "+ udp_text;
         });
@@ -94,6 +93,7 @@ document.addEventListener('deviceready', function(){
         cleanTransmission();
     }
     protocol.onchange = function() {
+        saveFormState();
         cleanTransmission();
         ch = parseInt(v_height.value)*parseInt(v_units.value);
         canvas.height = ch;
@@ -359,6 +359,7 @@ function saveFormState() {
   const data = objectFromEntries(new FormData(form).entries());
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
+  storage.setItem('protocol', protocol.value);
 }
   
 /**
@@ -371,6 +372,7 @@ function loadFormState() {
     for (var item in formKeyValue) {
         document.getElementsByName(item)[0].value = formKeyValue[item];
     }
+    dropdownSet(protocol, storage.getItem('protocol'));
 }
 
 function cleanTransmission(){
@@ -415,4 +417,13 @@ function str2buffer(str) {
     bufView[i] = str.charCodeAt(i);
   }
   return buf;
+}
+// Form helpers
+function dropdownSet(selectObj, valueToSet) {
+    for (var i = 0; i < selectObj.options.length; i++) {
+        if (selectObj.options[i].value == valueToSet) {
+            selectObj.options[i].selected = true;
+            return;
+        }
+    }
 }
