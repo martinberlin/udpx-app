@@ -1,4 +1,4 @@
-let VERSION = '1.0.6';
+let VERSION = '1.0.7';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -400,8 +400,11 @@ function validateIp(str, verbose) {
          ip.style.borderColor = "black";
      } else {
           transmission.innerHTML = '<span color="red">Not a valid IP</span>';
-          var configTabInit = tabsCollection[1].Tab;
-          configTabInit.show();
+          let configTabInit = tabsCollection[1].Tab;
+          let isConfigTab = document.getElementById('ct-tab').getAttribute('aria-expanded');
+          if (isConfigTab === 'false') {
+            configTabInit.show();
+          }
           ip.style.borderColor = "red";
      }
      return validIp;
