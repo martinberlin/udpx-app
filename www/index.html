@@ -49,14 +49,14 @@
             <div class="col-md-8" id="settings-container">
                 <form id="main-form">
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
+                    <ul class="nav nav-tabs" role="tablist" id="udpx-tab">
                         <li role="presentation">
-                            <a href="#vt" id="vt-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="vt" aria-expanded="true">
+                            <a href="#vt" id="vt-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="vt" aria-expanded="false">
                             Video
                             </a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="#ct" id="ct-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="ct">
+                            <a href="#ct" id="ct-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="ct" aria-expanded="true">
                             Controller
                         </a>
                         </li>
@@ -143,6 +143,16 @@
                                         <option value="rgb888">RGB888</option>
                                         <option value="bro888">BRO888</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-8">
+                                    <label for="udp_text" class="col-form-label">Text message</label>
+                                    <input id="udp_text" name="udp_text" type="text" class="form-control" maxlength="9"
+                                           value="">
+                                </div>
+                                <div class="col-xs-4" style="margin-top:1.8em">
+                                    <button class="form-control btn btn-default active" id="send_udp">Send UDP</button>
                                 </div>
                             </div>
                             <div class="form-group row">
