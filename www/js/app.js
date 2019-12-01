@@ -1,4 +1,4 @@
-let VERSION = '1.0.5';
+let VERSION = '1.0.6';
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
