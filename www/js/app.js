@@ -23,7 +23,8 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
-
+let configTab = document.getElementById('udpx-tab');
+let tabsCollection = configTab.getElementsByTagName('A');
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
   Object.entries = function( obj ){
@@ -46,6 +47,13 @@ document.addEventListener('deviceready', function(){
       encodingType: Camera.EncodingType.JPEG,
       cameraDirection: Camera.Direction.BACK
     };
+    // Bootstrap tabsCollection
+    for (var i = 0; i < tabsCollection.length; i++) {
+      new Tab(tabsCollection[i],
+      {
+        height: true
+      });
+    }
     // Start - EventListeners
     loadFormState()
 
@@ -118,7 +126,10 @@ document.addEventListener('deviceready', function(){
       if (!isSocketOpen) {
         openSocket();
       }
-      draw(this,context,cw,ch);
+      if (validateIp(ip.value, true)) {
+        draw(this,context,cw,ch);
+      }
+
     },false);
 
     v.addEventListener('pause', function(){
@@ -386,8 +397,12 @@ function validateIp(str, verbose) {
     validIp = regex.test(str);
      if (validIp) {
          if (verbose) transmission.innerText = 'Valid IP';
+         ip.style.borderColor = "black";
      } else {
           transmission.innerHTML = '<span color="red">Not a valid IP</span>';
+          var configTabInit = tabsCollection[1].Tab;
+          configTabInit.show();
+          ip.style.borderColor = "red";
      }
      return validIp;
 }
