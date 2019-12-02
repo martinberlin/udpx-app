@@ -23,7 +23,8 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
-let configTab = document.getElementById('udpx-tab');
+let configTab = document.getElementById('udpx-tab'),
+    ble_start = document.getElementById('ble_start');
 let tabsCollection = configTab.getElementsByTagName('A');
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
@@ -74,6 +75,22 @@ document.addEventListener('deviceready', function(){
         });
         return false;
     };
+
+    // Ble scan
+    ble_start.onclick = function() {
+        ble.startScan([], function(device) {
+            console.log(JSON.stringify(device));
+        }, function(error) {
+           console.log(error);
+        });
+
+        setTimeout(ble.stopScan,
+            5000,
+            function() { console.log("Scan complete"); },
+            function() { console.log("stopScan failed"); }
+        );
+        return false;
+    }
 
     video_select.onchange = function() {
         if (video_select.value !== '') {

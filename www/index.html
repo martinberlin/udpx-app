@@ -60,6 +60,11 @@
                             Controller
                         </a>
                         </li>
+                        <li role="presentation">
+                            <a href="#bt" id="ble-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="bt" aria-expanded="false">
+                                Config
+                            </a>
+                        </li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -164,6 +169,21 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane" id="bt">
+
+                                <div class="form-group row">
+                                    <div class="col-xs-8">
+                                    Please turn on Bluetooth
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <button class="form-control btn btn-primary" id="ble_start">Scan Ble</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 
             </form>
