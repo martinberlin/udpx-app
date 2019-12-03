@@ -15,7 +15,7 @@ let ip = document.getElementById('esp32_ip'),
     transmission = document.getElementById('transmission'),
     quality = document.getElementById('bro_quality'),
     v_brightness = document.getElementById('v_brightness');
-let socketId;
+let socketId, bleId;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -77,18 +77,55 @@ document.addEventListener('deviceready', function(){
     };
 
     // Ble scan
-    ble_start.onclick = function() {
-        ble.startScan([], function(device) {
-            console.log(JSON.stringify(device));
-        }, function(error) {
-           console.log(error);
-        });
+    var blue = {
+        list: function() {
+            deviceList.innerHTML = '';
+            ble.startScan([], blue.onDiscoverBle, function(error) {
+               console.log(error);
+            });
 
-        setTimeout(ble.stopScan,
-            5000,
-            function() { console.log("Scan complete"); },
-            function() { console.log("stopScan failed"); }
-        );
+            setTimeout(ble.stopScan, 1000,
+                function() {
+                console.log("BLE Scan complete, start serial scan");
+                bluetoothSerial.list(
+                    function(bs) {
+                        for (var d in bs) {
+                            blue.addDevice(bs[d], 'serial')
+                        }
+                        document.getElementById('ble_msg').innerText = 'Press to configure WiFi';
+                    },
+                    function(error) {
+                        console.log(JSON.stringify(error));
+                    }
+                );
+                }, function() {}
+            );
+        },
+        onDiscoverBle: function(device) {
+            // Filter devices starting by ESP*
+            if (typeof(device.name) !== 'undefined' && device.name.match(/ESP/i)) {
+                blue.addDevice(device, 'ble')
+            }
+        },
+        addDevice: function (device, typ) {
+            var listItem = document.createElement('button'),
+                html =  device.name + ' ' + device.id;
+            listItem.setAttribute('class', 'form-control btn btn-default active');
+            listItem.setAttribute('type', 'button');
+            listItem.dataset.id = device.id;
+            listItem.dataset.type = typ;
+            listItem.innerHTML = html;
+            listItem.onclick = function(b) {
+                 console.log(b)
+                 let bleId = 1; //TODO
+                 let wifiTabInit = tabsCollection[3].Tab;
+                 wifiTabInit.show();
+            };
+            deviceList.appendChild(listItem);
+        }
+        };
+    ble_start.onclick = function() {
+        blue.list();
         return false;
     }
 
