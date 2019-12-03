@@ -116,10 +116,10 @@ document.addEventListener('deviceready', function(){
             listItem.dataset.type = typ;
             listItem.innerHTML = html;
             listItem.onclick = function(b) {
-                 console.log(b)
-                 let bleId = 1; //TODO
-                 let wifiTabInit = tabsCollection[3].Tab;
-                 wifiTabInit.show();
+                let bleId = b.target.getAttribute('data-id'); //TODO
+                console.log(bleId+' configure tab')
+                let wifiTabInit = tabsCollection[3].Tab;
+                wifiTabInit.show();
             };
             deviceList.appendChild(listItem);
         }

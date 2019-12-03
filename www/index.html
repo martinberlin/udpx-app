@@ -195,8 +195,25 @@
 
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane" id="wt">
-
                                 <div class="form-group row">
+                                    <div class="col-xs-12">
+                                        <label for="wifi_ssid">WiFi SSID</label>
+                                        <input id="wifi_ssid" name="wifi_ssid" type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-xs-12">
+                                        <label for="wifi_pass">Password</label>
+                                        <input id="wifi_pass" name="wifi_pass" type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-xs-6">
+                                        <button class="form-control btn btn-warning" id="ble_reset">Reset ESP32</button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button class="form-control btn btn-primary" id="ble_set_config">Send config</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
