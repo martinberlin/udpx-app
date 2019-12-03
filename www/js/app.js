@@ -1,22 +1,24 @@
 let VERSION = '1.0.7';
 
-let v = document.getElementById('video');
-let canvas = document.getElementById('c');
+let d = document;
+let v = d.getElementById('video');
+let canvas = d.getElementById('c');
 let context = canvas.getContext('2d');
-let ip = document.getElementById('esp32_ip'),
-    port = document.getElementById('udp_port'),
-    contrast = document.getElementById('v_contrast'),
-    v_width  = document.getElementById('v_width'),
-    v_height = document.getElementById('v_height'),
-    v_units  = document.getElementById('v_units'),
-    video = document.getElementById('video'),
-    video_c = document.getElementById('video-c'),
-    video_select = document.getElementById('video_select'),
-    millis_frame = document.getElementById('millis_frame'),
-    protocol = document.getElementById('protocol'),
-    transmission = document.getElementById('transmission'),
-    quality = document.getElementById('bro_quality'),
-    v_brightness = document.getElementById('v_brightness');
+let ip = d.getElementById('esp32_ip'),
+    port = d.getElementById('udp_port'),
+    contrast = d.getElementById('v_contrast'),
+    v_width  = d.getElementById('v_width'),
+    v_height = d.getElementById('v_height'),
+    v_units  = d.getElementById('v_units'),
+    video = d.getElementById('video'),
+    video_c = d.getElementById('video-c'),
+    video_select = d.getElementById('video_select'),
+    millis_frame = d.getElementById('millis_frame'),
+    protocol = d.getElementById('protocol'),
+    transmission = d.getElementById('transmission'),
+    quality = d.getElementById('bro_quality'),
+    v_brightness = d.getElementById('v_brightness'),
+    wifi_store = d.getElementById('wifi_store');
 let socketId, bleId;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
@@ -25,8 +27,8 @@ let ua = navigator.userAgent.toLowerCase();
 let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
-let configTab = document.getElementById('udpx-tab'),
-    ble_start = document.getElementById('ble_start');
+let configTab = d.getElementById('udpx-tab'),
+    ble_start = d.getElementById('ble_start');
 let tabsCollection = configTab.getElementsByTagName('A');
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
@@ -41,7 +43,7 @@ if (!Object.entries) {
 }
 
 // DOMContentLoaded   -> deviceready for cordova
-document.addEventListener('deviceready', function(){
+d.addEventListener('deviceready', function(){
     let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
@@ -60,18 +62,18 @@ document.addEventListener('deviceready', function(){
     // Start - EventListeners
     loadFormState()
 
-    /*document.getElementById('fps').value = Math.round(1000/parseInt(millis_frame.value));
+    /*d.getElementById('fps').value = Math.round(1000/parseInt(millis_frame.value));
     millis_frame.onchange = function() {
      TODO: Calculation
     }*/
 
-    document.getElementById('vt-tab').onclick = function() {
+    d.getElementById('vt-tab').onclick = function() {
      video_c.style.display = 'block';
     }
-    document.getElementById('ct-tab').onclick = function() {
+    d.getElementById('ct-tab').onclick = function() {
      video_c.style.display = 'block';
     }
-    document.getElementById('main-form').onchange = function() {
+    d.getElementById('main-form').onchange = function() {
         saveFormState();
     };
 
@@ -80,14 +82,22 @@ document.addEventListener('deviceready', function(){
     }
 
     // Send udp message
-    document.getElementById('send_udp').onclick = function() {
-        udp_text = document.getElementById('udp_text').value;
+    d.getElementById('send_udp').onclick = function() {
+        udp_text = d.getElementById('udp_text').value;
         udp_buf = str2buffer(udp_text);
         chrome.sockets.udp.send(socketId, udp_buf , ip.value, parseInt(port.value), function() {
             transmission.innerText = "Sending "+ udp_text;
         });
         return false;
     };
+
+    wifi_store.onchange = function() {
+       if (wifi_store.checked) {
+          transmission.innerHTML = '<span style="color:red"><b>Security:</b> When you are done leave this unchecked</span>';
+       } else {
+          transmission.innerText = 'Thanks! Password was removed from local storage'
+       }
+    }
 
     // Ble scan
     var blue = {
@@ -106,7 +116,7 @@ document.addEventListener('deviceready', function(){
                         for (var i in bs) {
                             blue.addDevice(bs[i], 'serial')
                         }
-                        document.getElementById('ble_msg').innerText = 'Press to configure WiFi';
+                        d.getElementById('ble_msg').innerText = 'Press to configure WiFi';
                     },
                     function(error) {
                         console.log(JSON.stringify(error));
@@ -122,7 +132,7 @@ document.addEventListener('deviceready', function(){
             }
         },
         addDevice: function (device, typ) {
-            var listItem = document.createElement('button'),
+            var listItem = d.createElement('button'),
                 html =  device.name + ' ' + device.id;
             listItem.setAttribute('class', 'form-control btn btn-default active');
             listItem.setAttribute('type', 'button');
@@ -224,10 +234,10 @@ document.addEventListener('deviceready', function(){
        }
     }
 
-    document.getElementById('v-open').addEventListener('click', function () {
+    d.getElementById('v-open').addEventListener('click', function () {
         navigator.camera.getPicture(cameraApp.start, cameraApp.error, cameraConfig)
     });
-    document.getElementById('version').innerText = VERSION;
+    d.getElementById('version').innerText = VERSION;
 },false);
 
 function sendUdp(bytesToPost) {
@@ -425,7 +435,7 @@ function openSocket() {
     video.setAttribute('poster', '')
     video.src = fileURL
   }
-  var inputNode = document.querySelector('input')
+  var inputNode = d.querySelector('input')
   inputNode.addEventListener('change', playSelectedFile, false)
 })()
 
@@ -434,8 +444,11 @@ function openSocket() {
  * @param $form to save in localstorage(jQuery object)
  */
 function saveFormState() {
-  const form = document.querySelector('form');
+  const form = d.querySelector('form');
   const data = objectFromEntries(new FormData(form).entries());
+  if (!wifi_store.checked) {
+     data.wifi_pass = '';
+  }
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
   storage.setItem('protocol', protocol.value);
@@ -449,7 +462,7 @@ function loadFormState() {
     if (formData == null || typeof formData !== 'string') return;
     formKeyValue = JSON.parse(formData);
     for (var item in formKeyValue) {
-        document.getElementsByName(item)[0].value = formKeyValue[item];
+        d.getElementsByName(item)[0].value = formKeyValue[item];
     }
     dropdownSet(protocol, storage.getItem('protocol'));
 }
@@ -469,7 +482,7 @@ function validateIp(str, verbose) {
      } else {
           transmission.innerHTML = '<span color="red">Not a valid IP</span>';
           let configTabInit = tabsCollection[1].Tab;
-          let isConfigTab = document.getElementById('ct-tab').getAttribute('aria-expanded');
+          let isConfigTab = d.getElementById('ct-tab').getAttribute('aria-expanded');
           if (isConfigTab === 'false') {
             configTabInit.show();
           }
