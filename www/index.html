@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="row">
                     <div class="col-xs-10">
                         <img id="udpx" src="./assets/udpx-logo.png">
@@ -29,6 +29,10 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" id="video-c">
                 <div class="row">
                     <div class="col-xs-12 video-container">
                         <video id="video" class="video" src="video/01.mp4" controls></video>
@@ -121,6 +125,7 @@
                                     <input id="millis_frame" name="millis_frame" type="number" class="form-control form-control-sm"
                                            maxlength="3" value="100" required>
                                 </div>
+
                                 <div class="col-xs-4">
                                     <label for="bro_quality">Br quality</label>
                                     <input id="bro_quality" name="bro_quality" type="number" class="form-control form-control-sm"
@@ -129,6 +134,7 @@
 
                                 <div class="col-xs-4">
                                     <canvas id="c"></canvas>
+                                    <input id="fps" name="fps" type="hidden" class="form-control form-control-sm" maxlength="4">
                                 </div>
                             </div>
 
@@ -175,48 +181,46 @@
                             </div>
                         </div>
 
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="bt">
 
-                                <div class="form-group row">
-                                    <div class="col-xs-8" style="margin-top:0.8em" id="ble_msg">
-                                    Please turn on Bluetooth
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <button class="form-control btn btn-primary" id="ble_start">Scan Ble</button>
-                                    </div>
+                        <div role="tabpanel" class="tab-pane active" id="bt">
+
+                            <div class="form-group row">
+                                <div class="col-xs-8" style="margin-top:0.8em" id="ble_msg">
+                                Please turn on Bluetooth
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-12" id="deviceList">
-                                    </div>
+                                <div class="col-xs-4">
+                                    <button class="form-control btn btn-primary" id="ble_start">Scan Ble</button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12" id="deviceList">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane" id="wt">
-                                <div class="form-group row">
-                                    <div class="col-xs-12">
-                                        <label for="wifi_ssid">WiFi SSID</label>
-                                        <input id="wifi_ssid" name="wifi_ssid" type="text" class="form-control" required>
-                                    </div>
+                        <div role="tabpanel" class="tab-pane" id="wt">
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <label for="wifi_ssid">WiFi SSID</label>
+                                    <input id="wifi_ssid" name="wifi_ssid" type="text" class="form-control" required>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-12">
-                                        <label for="wifi_pass">Password</label>
-                                        <input id="wifi_pass" name="wifi_pass" type="text" class="form-control" required>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <label for="wifi_pass">Password</label>
+                                    <input id="wifi_pass" name="wifi_pass" type="text" class="form-control" required>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-6">
-                                        <button class="form-control btn btn-warning" id="ble_reset">Reset ESP32</button>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <button class="form-control btn btn-primary" id="ble_set_config">Send config</button>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-6">
+                                    <button class="form-control btn btn-warning" id="ble_reset">Reset ESP32</button>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button class="form-control btn btn-primary" id="ble_set_config">Send config</button>
                                 </div>
                             </div>
                         </div>
+
 
                     </div>
                 

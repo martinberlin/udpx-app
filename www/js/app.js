@@ -1,4 +1,5 @@
 let VERSION = '1.0.7';
+
 let v = document.getElementById('video');
 let canvas = document.getElementById('c');
 let context = canvas.getContext('2d');
@@ -9,6 +10,7 @@ let ip = document.getElementById('esp32_ip'),
     v_height = document.getElementById('v_height'),
     v_units  = document.getElementById('v_units'),
     video = document.getElementById('video'),
+    video_c = document.getElementById('video-c'),
     video_select = document.getElementById('video_select'),
     millis_frame = document.getElementById('millis_frame'),
     protocol = document.getElementById('protocol'),
@@ -58,6 +60,17 @@ document.addEventListener('deviceready', function(){
     // Start - EventListeners
     loadFormState()
 
+    /*document.getElementById('fps').value = Math.round(1000/parseInt(millis_frame.value));
+    millis_frame.onchange = function() {
+     TODO: Calculation
+    }*/
+
+    document.getElementById('vt-tab').onclick = function() {
+     video_c.style.display = 'block';
+    }
+    document.getElementById('ct-tab').onclick = function() {
+     video_c.style.display = 'block';
+    }
     document.getElementById('main-form').onchange = function() {
         saveFormState();
     };
@@ -79,6 +92,7 @@ document.addEventListener('deviceready', function(){
     // Ble scan
     var blue = {
         list: function() {
+            video_c.style.display = 'none';
             deviceList.innerHTML = '';
             ble.startScan([], blue.onDiscoverBle, function(error) {
                console.log(error);
@@ -89,8 +103,8 @@ document.addEventListener('deviceready', function(){
                 console.log("BLE Scan complete, start serial scan");
                 bluetoothSerial.list(
                     function(bs) {
-                        for (var d in bs) {
-                            blue.addDevice(bs[d], 'serial')
+                        for (var i in bs) {
+                            blue.addDevice(bs[i], 'serial')
                         }
                         document.getElementById('ble_msg').innerText = 'Press to configure WiFi';
                     },
