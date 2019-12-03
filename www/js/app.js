@@ -23,8 +23,6 @@ let socketId, bleId;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
-let ua = navigator.userAgent.toLowerCase();
-let isAndroid = ua.indexOf("android") > -1;
 let storage = window.localStorage;
 let isSocketOpen = false;
 let configTab = d.getElementById('udpx-tab'),
@@ -104,6 +102,7 @@ d.addEventListener('deviceready', function(){
         list: function() {
             video_c.style.display = 'none';
             deviceList.innerHTML = '';
+
             ble.startScan([], blue.onDiscoverBle, function(error) {
                console.log(error);
             });
@@ -131,6 +130,9 @@ d.addEventListener('deviceready', function(){
                 blue.addDevice(device, 'ble')
             }
         },
+        notEnabled: function() {
+            transmission.innerHTML = '<span style="color:red"><b>BLUETOOTH IS NOT ENABLED<b></span>'
+        },
         addDevice: function (device, typ) {
             var listItem = d.createElement('button'),
                 html =  device.name + ' ' + device.id;
@@ -148,8 +150,14 @@ d.addEventListener('deviceready', function(){
             deviceList.appendChild(listItem);
         }
         };
-    ble_start.onclick = function() {
-        blue.list();
+
+     ble_start.onclick = function() {
+       // check if Bluetooth is on:
+        bluetoothSerial.isEnabled(
+            blue.list,
+            blue.notEnabled
+        );
+
         return false;
     }
 
