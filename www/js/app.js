@@ -16,10 +16,11 @@ let ip = d.getElementById('esp32_ip'),
     millis_frame = d.getElementById('millis_frame'),
     protocol = d.getElementById('protocol'),
     transmission = d.getElementById('transmission'),
+    wifi_msg = d.getElementById('wifi_msg'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
     wifi_store = d.getElementById('wifi_store');
-let socketId, bleId;
+let socketId, ble_id, ble_type;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -59,11 +60,6 @@ d.addEventListener('deviceready', function(){
     }
     // Start - EventListeners
     loadFormState()
-
-    /*d.getElementById('fps').value = Math.round(1000/parseInt(millis_frame.value));
-    millis_frame.onchange = function() {
-     TODO: Calculation
-    }*/
 
     d.getElementById('vt-tab').onclick = function() {
      video_c.style.display = 'block';
@@ -140,10 +136,13 @@ d.addEventListener('deviceready', function(){
             listItem.setAttribute('type', 'button');
             listItem.dataset.id = device.id;
             listItem.dataset.type = typ;
+            listItem.dataset.name = device.name;
             listItem.innerHTML = html;
             listItem.onclick = function(b) {
-                let bleId = b.target.getAttribute('data-id'); //TODO
-                console.log(bleId+' configure tab')
+                ble_id = b.target.getAttribute('data-id');
+                ble_type = b.target.getAttribute('data-type');
+                wifi_msg.innerText = "Target: "+b.target.getAttribute('data-name')+" Type:"+ble_type;
+
                 let wifiTabInit = tabsCollection[3].Tab;
                 wifiTabInit.show();
             };
