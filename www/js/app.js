@@ -22,7 +22,7 @@ let ip = d.getElementById('esp32_ip'),
     wifi_store = d.getElementById('wifi_store'),
     wifi_ssid = d.getElementById('wifi_ssid'),
     wifi_pass = d.getElementById('wifi_pass');
-let socketId, ble_id, ble_type;
+let socketId, ble_id, ble_type, ble_name;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -45,6 +45,7 @@ if (!Object.entries) {
 
 // DOMContentLoaded   -> deviceready for cordova
 d.addEventListener('deviceready', function(){
+
     let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
@@ -107,7 +108,7 @@ d.addEventListener('deviceready', function(){
 
             setTimeout(ble.stopScan, 1000,
                 function() {
-                console.log("BLE Scan complete, start serial scan");
+                console.log('bluetoothSerial.list');
                 bluetoothSerial.list(
                     function(bs) {
                         for (var i in bs) {
@@ -129,14 +130,9 @@ d.addEventListener('deviceready', function(){
             }
         },
         notEnabled: function() {
-            transmission.innerHTML = '<span style="color:red"><b>BLUETOOTH IS NOT ENABLED<b></span>'
+            blue.showError('BLUETOOTH IS NOT ENABLED');
         },
-        sendMessage: function(message) {
-            if (ble_type === 'serial') {
-              bluetoothSerial.write(message+ "\n");
-            }
-            
-        },
+
         addDevice: function (device, typ) {
             var listItem = d.createElement('button'),
                 html =  device.name + ' ' + device.id;
@@ -150,14 +146,24 @@ d.addEventListener('deviceready', function(){
             listItem.onclick = function(b) {
                 ble_id = b.target.getAttribute('data-id');
                 ble_type = b.target.getAttribute('data-type');
-                wifi_msg.innerText = "Target: "+b.target.getAttribute('data-name')+" Type:"+ble_type;
+                ble_name = b.target.getAttribute('data-name');
+                wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[3].Tab;
 
+                //blue.connect();
                 bluetoothSerial.isConnected(blue.disconnect, blue.connect);
 
                 wifiTabInit.show();
+                return false;
             };
             deviceList.appendChild(listItem);
+        },
+
+        sendMessage: function(message) {
+            if (ble_type === 'serial') {
+              bluetoothSerial.write(message+ "\n");
+            }
+
         },
         connect: function() {
             if (ble_type === 'serial') {
@@ -170,60 +176,81 @@ d.addEventListener('deviceready', function(){
                 }
         },
         disconnect: function () {
-         if (ble_type === 'serial') {
-                console.log("serial: disconnecting "+ble_id)
-                // if connected, do this:
-                bluetoothSerial.disconnect(
-                    blue.closePort,     // stop listening to the port
-                    blue.showError      // show the error if you fail
-                );
-            }
+             console.log("Disconnecting "+ble_id)
+             if (ble_type === 'serial') {
+                    bluetoothSerial.disconnect(
+                        blue.closePort,     // stop listening to the port
+                        blue.showError      // show the error if you fail
+                    );
+                }
         },
         openPort: function() {
             console.log('openPort and send JSON test')
-            bluetoothSerial.subscribe('X\n', function (data) {
-                blue.clear();
-                blue.display(data);
-            });
+            if (ble_type === 'serial') {
+                bluetoothSerial.subscribe('\n', function (data) {
+                    blue.displayClear();
+                    blue.display(data);
+                });
+            }
         },
         closePort: function() {
             console.log('closePort')
-            // unsubscribe from listening:
-            bluetoothSerial.unsubscribe(
-                    function (data) {
-                        blue.display(data);
-                    },
-                    blue.showError
-            );
+            if (ble_type === 'serial') {
+                bluetoothSerial.unsubscribe(
+                        function (data) {
+                            blue.display(data);
+                        },
+                        blue.showError
+                );
+            }
         },
-
-         showError: function(error) {
-             blue.display(error);
-         },
-         display: function(message) {
-             lineBreak = document.createElement("br"),
-             label = document.createTextNode(message);
-
+        showError: function(error) {
+            wifi_foot_msg.innerHTML = '<span color="red"><b>'+ error +'</b></span>';
+        },
+        display: function(message) {
+            lineBreak = document.createElement("br"),
+            label = document.createTextNode(message);
              wifi_foot_msg.appendChild(lineBreak);
              wifi_foot_msg.appendChild(label);
-         },
-         clear: function() {
-             wifi_foot_msg.innerHTML = "";
-         }
-        };
+        },
+        displayClear: function() {
+            wifi_foot_msg.innerHTML = "";
+        },
+        start: function() {
+           bluetoothSerial.isEnabled(
+                    blue.list,
+                    blue.notEnabled
+           );
+        }
+
+     };
+
+      d.getElementById('ble-tab').onclick = function() {
+        blue.displayClear();
+        blue.start();
+        return false;
+      }
+      d.getElementById('ble_reset').onclick = function() {
+         blue.displayClear();
+         blue.sendMessage('{"reset":"true"}');
+         return false;
+      }
+      d.getElementById('ble_erase').onclick = function() {
+         blue.displayClear();
+         blue.sendMessage('{"erase":"true"}');
+         return false;
+      }
 
      ble_start.onclick = function() {
        // check if Bluetooth is on:
-        bluetoothSerial.isEnabled(
-            blue.list,
-            blue.notEnabled
-        );
+       blue.start();
+       return false;
+     }
 
-        return false;
-    }
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
          blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
+
          return false;
     }
 
