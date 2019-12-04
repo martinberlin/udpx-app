@@ -19,7 +19,9 @@ let ip = d.getElementById('esp32_ip'),
     wifi_msg = d.getElementById('wifi_msg'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
-    wifi_store = d.getElementById('wifi_store');
+    wifi_store = d.getElementById('wifi_store'),
+    wifi_ssid = d.getElementById('wifi_ssid'),
+    wifi_pass = d.getElementById('wifi_pass');
 let socketId, ble_id, ble_type;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
@@ -129,6 +131,12 @@ d.addEventListener('deviceready', function(){
         notEnabled: function() {
             transmission.innerHTML = '<span style="color:red"><b>BLUETOOTH IS NOT ENABLED<b></span>'
         },
+        sendMessage: function(message) {
+            if (ble_type === 'serial') {
+              bluetoothSerial.write(message+ "\n");
+            }
+            
+        },
         addDevice: function (device, typ) {
             var listItem = d.createElement('button'),
                 html =  device.name + ' ' + device.id;
@@ -172,11 +180,11 @@ d.addEventListener('deviceready', function(){
             }
         },
         openPort: function() {
-            console.log('openPort')
-            bluetoothSerial.subscribe('\n', function (data) {
-                    blue.clear();
-                    blue.display(data);
-                });
+            console.log('openPort and send JSON test')
+            bluetoothSerial.subscribe('X\n', function (data) {
+                blue.clear();
+                blue.display(data);
+            });
         },
         closePort: function() {
             console.log('closePort')
@@ -187,7 +195,7 @@ d.addEventListener('deviceready', function(){
                     },
                     blue.showError
             );
-            },
+        },
 
          showError: function(error) {
              blue.display(error);
@@ -212,6 +220,11 @@ d.addEventListener('deviceready', function(){
         );
 
         return false;
+    }
+    // Send WiFi configuration to ESP32
+    ble_set_config.onclick = function() {
+         blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
+         return false;
     }
 
     video_select.onchange = function() {
