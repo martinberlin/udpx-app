@@ -30,6 +30,8 @@ let storage = window.localStorage;
 let isSocketOpen = false;
 let configTab = d.getElementById('udpx-tab'),
     ble_start = d.getElementById('ble_start');
+let ble_service_uuid = '0000aaaa-ead2-11e7-80c1-9a214cf093ae';
+let ble_wifi_uuid = '00005555-ead2-11e7-80c1-9a214cf093ae';
 let tabsCollection = configTab.getElementsByTagName('A');
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
@@ -162,6 +164,9 @@ d.addEventListener('deviceready', function(){
         sendMessage: function(message) {
             if (ble_type === 'serial') {
               bluetoothSerial.write(message+ "\n");
+            } else {
+
+              ble.write(ble_id, ble_service_uuid, ble_wifi_uuid, message, blue.display, blue.showError);
             }
 
         },
@@ -173,12 +178,19 @@ d.addEventListener('deviceready', function(){
                         blue.openPort,  // start listening
                         blue.showError
                     );
+                } else {
+                    ble.connect(ble_id, blue.openPort, blue.disconnect);
                 }
         },
         disconnect: function () {
              console.log("Disconnecting "+ble_id)
              if (ble_type === 'serial') {
                     bluetoothSerial.disconnect(
+                        blue.closePort,     // stop listening to the port
+                        blue.showError      // show the error if you fail
+                    );
+                } else {
+                    ble.disconnect(
                         blue.closePort,     // stop listening to the port
                         blue.showError      // show the error if you fail
                     );
