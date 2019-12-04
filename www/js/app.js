@@ -93,8 +93,8 @@ d.addEventListener('deviceready', function(){
        }
     }
 
-    // Ble scan
-    var blue = {
+    // Blue App
+    let blue = {
         list: function() {
             video_c.style.display = 'none';
             deviceList.innerHTML = '';
@@ -138,16 +138,67 @@ d.addEventListener('deviceready', function(){
             listItem.dataset.type = typ;
             listItem.dataset.name = device.name;
             listItem.innerHTML = html;
+
             listItem.onclick = function(b) {
                 ble_id = b.target.getAttribute('data-id');
                 ble_type = b.target.getAttribute('data-type');
                 wifi_msg.innerText = "Target: "+b.target.getAttribute('data-name')+" Type:"+ble_type;
-
                 let wifiTabInit = tabsCollection[3].Tab;
                 wifiTabInit.show();
+
+                bluetoothSerial.isConnected(blue.disconnect, blue.connect);
             };
             deviceList.appendChild(listItem);
-        }
+        },
+        connect: function() {
+            if (ble_type === 'serial') {
+                    console.log("serial: attempt connecting to "+ble_id)
+                    bluetoothSerial.connect(
+                        ble_id,         // device to connect
+                        blue.openPort,  // start listening
+                        blue.showError
+                    );
+                }
+        },
+        disconnect: function () {
+                blue.display("attempting to disconnect");
+                // if connected, do this:
+                bluetoothSerial.disconnect(
+                    blue.closePort,     // stop listening to the port
+                    blue.showError      // show the error if you fail
+                );
+            },
+            openPort: function() {
+                console.log('openPort')
+                bluetoothSerial.subscribe('\n', function (data) {
+                        blue.clear();
+                        blue.display(data);
+                    });
+            },
+            closePort: function() {
+                console.log('closePort')
+                // unsubscribe from listening:
+                bluetoothSerial.unsubscribe(
+                        function (data) {
+                            blue.display(data);
+                        },
+                        blue.showError
+                );
+                },
+
+             showError: function(error) {
+                 blue.display(error);
+             },
+             display: function(message) {
+                 lineBreak = document.createElement("br"),
+                 label = document.createTextNode(message);
+
+                 wifi_foot_msg.appendChild(lineBreak);
+                 wifi_foot_msg.appendChild(label);
+             },
+             clear: function() {
+                 wifi_foot_msg.innerHTML = "";
+             }
         };
 
      ble_start.onclick = function() {
