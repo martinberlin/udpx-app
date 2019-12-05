@@ -83,7 +83,7 @@
                             <div class="form-group row">
                                 <div class="col-xs-4">
                                     <label for="v_width">Pix.width</label>
-                                    <input id="v_width" name="v_width"  type="number" class="form-control form-control-sm" maxlength="3" value="44"
+                                    <input id="v_width" name="v_width"  type="number" class="form-control form-control-sm" maxlength="3" value="10"
                                            required>
                                 </div>
                                 <div class="col-xs-4">
@@ -144,18 +144,18 @@
                                 <div class="col-xs-5">
                                     <label for="esp32_ip" class="col-form-label"><b>Espressif IP</b></label>
                                     <input id="esp32_ip" name="esp32_ip" type="text" class="col-xs-10 form-control form-control-sm" maxlength="15"
-                                           value="192.168.0.">
+                                           value="192.168.0.101">
                                 </div>
                                 <div class="col-xs-3">
                                     <label for="udp_port" class="col-form-label">Port</label>
                                     <input id="udp_port" name="udp_port" type="text" class="form-control form-control-sm" maxlength="5" size="5"
-                                           value="1234">
+                                           value="49161">
                                 </div>
                                 <div class="col-xs-4">
                                     <label for="protocol" class="col-form-label">Protocol</label>
                                     <select id="protocol" class="form-control form-control-sm">
-                                        <option value="pixels">Pixels</option>
-                                        <option value="pixbro" selected>Pixels Brotli</option>
+                                        <option value="pixels" selected>Pixels</option>
+                                        <option value="pixbro" >Pixels Brotli</option>
                                         <option value="rgb888">RGB888</option>
                                         <option value="bro888">BRO888</option>
                                     </select>
