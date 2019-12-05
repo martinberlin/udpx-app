@@ -27,6 +27,12 @@ Protocols supported:
 iOS /iPad version is comming soon, also a Windows/Linux build, if you want to use it on your PC.
 If you need any other platform, feel free to clone this, and make it your own. To check upcoming features just open the [Issues board](https://github.com/martinberlin/udpx-app/issues).
 
+## Dependencies
+
+udpx-app uses offers both BLE and Bluetooth-serial WiFi configuration using this great plugins:
+https://github.com/don/BluetoothSerial
+https://github.com/don/cordova-plugin-ble-central
+
 ## UDPX ESP32 Firmware
 
 This is a companion App to send binary data via WiFi to ESP32 Led controllers. To compile the Firmware please refer to:

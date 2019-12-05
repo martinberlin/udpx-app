@@ -1,4 +1,4 @@
-let VERSION = '1.0.7';
+let VERSION = '1.0.8';
 
 let d = document;
 let v = d.getElementById('video');
@@ -63,6 +63,27 @@ d.addEventListener('deviceready', function(){
         height: true
       });
     }
+
+    var zeroconf = cordova.plugins.zeroconf;
+    zeroconf.registerAddressFamily = 'ipv4';
+    zeroconf.watchAddressFamily = 'ipv4';
+    zeroconf.getHostname(function success(hostname){
+        console.log(hostname); // ipad-of-becvert.local.
+    });
+    console.log('discover: mDns')
+   zeroconf.watch('_http._tcp.', 'local.', function(result) {
+   console.log(result)
+       var action = result.action;
+       var service = result.service;
+       if (action == 'added') {
+           console.log('service added', service);
+       } else if (action == 'resolved') {
+           console.log('service resolved', service);
+       } else {
+           console.log('service removed', service);
+       }
+   });
+
     // Start - EventListeners
     loadFormState()
 
@@ -151,8 +172,8 @@ d.addEventListener('deviceready', function(){
                 ble_name = b.target.getAttribute('data-name');
                 wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[3].Tab;
-                blue.connect();
-                //bluetoothSerial.isConnected(blue.disconnect, blue.connect);
+
+                bluetoothSerial.isConnected(blue.disconnect, blue.connect);
 
                 wifiTabInit.show();
                 return false;
@@ -257,7 +278,6 @@ d.addEventListener('deviceready', function(){
                     blue.notEnabled
            );
         }
-
      };
 
       d.getElementById('ble-tab').onclick = function() {
@@ -276,7 +296,7 @@ d.addEventListener('deviceready', function(){
          return false;
       }
       d.getElementById('ble_getip').onclick = function() {
-         blue.connectForIp();
+         bluetoothSerial.isConnected(blue.disconnect, blue.connectForIp);
          return false;
       }
      ble_start.onclick = function() {
