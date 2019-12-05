@@ -108,7 +108,7 @@ d.addEventListener('deviceready', function(){
                console.log(error);
             });
 
-            setTimeout(ble.stopScan, 1400,
+            setTimeout(ble.stopScan, 1000,
                 function() {
                 console.log('bluetoothSerial.list');
                 bluetoothSerial.list(
@@ -151,7 +151,8 @@ d.addEventListener('deviceready', function(){
                 ble_name = b.target.getAttribute('data-name');
                 wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[3].Tab;
-                bluetoothSerial.isConnected(blue.disconnect, blue.connect);
+                blue.connect();
+                //bluetoothSerial.isConnected(blue.disconnect, blue.connect);
 
                 wifiTabInit.show();
                 return false;
@@ -214,14 +215,17 @@ d.addEventListener('deviceready', function(){
             }
         },
         openPortForIp: function() {
-                    console.log('openPortForIp')
+
                     if (ble_type === 'serial') {
+                    console.log('openPortForIp and subscribing')
                         bluetoothSerial.subscribe('\n', function (data) {
                             blue.displayClear();
                             blue.display(data);
                         });
 
-                        blue.sendMessage('{"getip":"true"}');
+                        blue.sendMessage('{"getip":"true"}')
+                    //setTimeout(function(){  }, 500);
+
                     }
                 },
         closePort: function() {
