@@ -10,7 +10,6 @@ let ip = d.getElementById('esp32_ip'),
     v_width  = d.getElementById('v_width'),
     v_height = d.getElementById('v_height'),
     v_units  = d.getElementById('v_units'),
-    video = d.getElementById('video'),
     video_c = d.getElementById('video-c'),
     video_select = d.getElementById('video_select'),
     millis_frame = d.getElementById('millis_frame'),
@@ -26,6 +25,7 @@ let socketId, ble_id, ble_type, ble_name;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
+    console.log('cw:'+cw);
 let storage = window.localStorage;
 let isSocketOpen = false;
 let configTab = d.getElementById('udpx-tab'),
@@ -295,10 +295,11 @@ d.addEventListener('deviceready', function(){
     video_select.onchange = function() {
         if (video_select.value !== '') {
             cleanTransmission();
-            video.setAttribute('src','video/'+video_select.value);
+            v.setAttribute('src','video/'+video_select.value);
             ch = parseInt(v_height.value)*parseInt(v_units.value);
             canvas.width = parseInt(v_width.value);
             canvas.height = ch;
+            console.log('width:'+canvas.width)
         }
     };
     ip.onchange = function() {
@@ -307,6 +308,11 @@ d.addEventListener('deviceready', function(){
     port.onchange = function() {
         cleanTransmission();
     };
+    v_width.onchange = function() {
+            cleanTransmission();
+            cw = parseInt(v_width.value)
+            canvas.width = cw
+        }
     v_height.onchange = function() {
         cleanTransmission();
         ch = parseInt(v_height.value)*parseInt(v_units.value);
@@ -340,6 +346,8 @@ d.addEventListener('deviceready', function(){
     canvas.height = parseInt(v_height.value)*parseInt(v_units.value);
 
     v.addEventListener('play', function(){
+        cw = parseInt(v_width.value)
+        ch = parseInt(v_height.value)*parseInt(v_units.value)
       if (!isSocketOpen) {
         openSocket();
       }
@@ -361,8 +369,8 @@ d.addEventListener('deviceready', function(){
 
     let cameraApp = {
        start: function(image_url) {
-           video.src = '';
-           video.setAttribute('poster', image_url);
+           v.src = '';
+           v.setAttribute('poster', image_url);
             if (!isSocketOpen) {
                openSocket();
             }
@@ -560,7 +568,7 @@ function openSocket() {
   var playSelectedFile = function (event) {
     var file = this.files[0]
     var type = file.type
-    var canPlay = video.canPlayType(type)
+    var canPlay = v.canPlayType(type)
     if (canPlay === '') canPlay = 'no'
     var message = 'Can play type "' + type + '": ' + canPlay
     var isError = canPlay === 'no'
@@ -571,8 +579,8 @@ function openSocket() {
     }
 
     var fileURL = URL.createObjectURL(file)
-    video.setAttribute('poster', '')
-    video.src = fileURL
+    v.setAttribute('poster', '')
+    v.src = fileURL
   }
   var inputNode = d.querySelector('input')
   inputNode.addEventListener('change', playSelectedFile, false)
