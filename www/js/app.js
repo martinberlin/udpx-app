@@ -108,7 +108,7 @@ d.addEventListener('deviceready', function(){
                console.log(error);
             });
 
-            setTimeout(ble.stopScan, 1000,
+            setTimeout(ble.stopScan, 1400,
                 function() {
                 console.log('bluetoothSerial.list');
                 bluetoothSerial.list(
@@ -151,8 +151,6 @@ d.addEventListener('deviceready', function(){
                 ble_name = b.target.getAttribute('data-name');
                 wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[3].Tab;
-
-                //blue.connect();
                 bluetoothSerial.isConnected(blue.disconnect, blue.connect);
 
                 wifiTabInit.show();
@@ -182,6 +180,17 @@ d.addEventListener('deviceready', function(){
                     ble.connect(ble_id, blue.openPort, blue.disconnect);
                 }
         },
+        connectForIp: function() {
+                    if (ble_type === 'serial') {
+                            bluetoothSerial.connect(
+                                ble_id,         // device to connect
+                                blue.openPortForIp,  // start listening
+                                blue.showError
+                            );
+                        } else {
+                            ble.connect(ble_id, blue.openPortForIp, blue.disconnect);
+                        }
+                },
         disconnect: function () {
              console.log("Disconnecting "+ble_id)
              if (ble_type === 'serial') {
@@ -197,7 +206,6 @@ d.addEventListener('deviceready', function(){
                 }
         },
         openPort: function() {
-            console.log('openPort and send JSON test')
             if (ble_type === 'serial') {
                 bluetoothSerial.subscribe('\n', function (data) {
                     blue.displayClear();
@@ -205,6 +213,17 @@ d.addEventListener('deviceready', function(){
                 });
             }
         },
+        openPortForIp: function() {
+                    console.log('openPortForIp')
+                    if (ble_type === 'serial') {
+                        bluetoothSerial.subscribe('\n', function (data) {
+                            blue.displayClear();
+                            blue.display(data);
+                        });
+
+                        blue.sendMessage('{"getip":"true"}');
+                    }
+                },
         closePort: function() {
             console.log('closePort')
             if (ble_type === 'serial') {
@@ -252,7 +271,10 @@ d.addEventListener('deviceready', function(){
          blue.sendMessage('{"erase":"true"}');
          return false;
       }
-
+      d.getElementById('ble_getip').onclick = function() {
+         blue.connectForIp();
+         return false;
+      }
      ble_start.onclick = function() {
        // check if Bluetooth is on:
        blue.start();
@@ -453,7 +475,7 @@ function convertChannel(pixels) {
     }
 
     if (!isSocketOpen) {
-      transmission.innerHTML = '<span color="red">Socket is closed: Add IP</span>';
+      transmission.innerHTML = '<span style="color:red">Socket is closed: Add IP</span>';
       return;
     }
     sendUdp(bytesToPost);
