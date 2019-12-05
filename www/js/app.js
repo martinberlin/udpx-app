@@ -381,7 +381,9 @@ function loadFormState() {
     if (formData == null || typeof formData !== 'string') return;
     formKeyValue = JSON.parse(formData);
     for (var item in formKeyValue) {
-        document.getElementsByName(item)[0].value = formKeyValue[item];
+        if (typeof document.getElementsByName(item)[0] !== 'undefined') {
+           document.getElementsByName(item)[0].value = formKeyValue[item];
+        }
     }
     dropdownSet(protocol, storage.getItem('protocol'));
 }
