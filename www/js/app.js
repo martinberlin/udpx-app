@@ -165,8 +165,8 @@ d.addEventListener('deviceready', function(){
             if (ble_type === 'serial') {
               bluetoothSerial.write(message+ "\n");
             } else {
-
-              ble.write(ble_id, ble_service_uuid, ble_wifi_uuid, message, blue.display, blue.showError);
+              let ble_msg = str2buffer(message);
+              ble.write(ble_id, ble_service_uuid, ble_wifi_uuid, ble_msg, blue.display, blue.showError);
             }
 
         },
