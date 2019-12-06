@@ -31,7 +31,8 @@ let isSocketOpen = false;
 let config_tab = d.getElementById('udpx-tab'),
     disco_tab = d.getElementById('disco-tab'),
     disco_msg = d.getElementById('disco_msg'),
-    device_list = d.getElementById('device_list'),
+    device_list_paired = d.getElementById('device_list_paired'),
+    device_list_unpaired = d.getElementById('device_list_unpaired'),
     discovery_list = d.getElementById('discovery_list'),
     discovery_enabled = false;
 
@@ -118,8 +119,9 @@ d.addEventListener('deviceready', function(){
     let blue = {
         list: function() {
             video_c.style.display = 'none';
-            device_list.innerHTML = '';
-
+            device_list_paired.innerHTML = '';
+            device_list_unpaired.innerHTML = '';
+            d.getElementById('ble_msg_foot').innerText = '';
             ble.startScan([], blue.onDiscoverBle, function(error) {
                console.log(error);
             });
@@ -128,13 +130,21 @@ d.addEventListener('deviceready', function(){
                 function() {
                 bluetoothSerial.list(
                     function(bs) {
-                        for (var i in bs) {
-                            blue.addDevice(bs[i], 'serial')
-                        }
                         d.getElementById('ble_msg').innerText = 'Bluetooth scan. Select target:';
+                        for (var i in bs) {
+                            blue.addDevice(bs[i], 'serial', true)
+                        }
+
+                        bluetoothSerial.discoverUnpaired(function(bs) {
+                             for (var i in bs) {
+                                 blue.addDevice(bs[i], 'serial', false)
+                             }
+                         }, function(error) {
+                                d.getElementById('ble_msg_foot').innerText = JSON.stringify(error);
+                            });
                     },
                     function(error) {
-                        console.log(JSON.stringify(error));
+                        d.getElementById('ble_msg_foot').innerText = JSON.stringify(error);
                     }
                 );
                 }, function() {}
@@ -151,7 +161,6 @@ d.addEventListener('deviceready', function(){
         },
         removeDiscovery: function (service) {
             if (typeof d.getElementById(service.name) == 'undefined') return;
-            console.log('Removing service:'+service.name)
             d.getElementById(service.name).remove();
         },
         addDiscovery: function (service) {
@@ -186,7 +195,7 @@ d.addEventListener('deviceready', function(){
             };
             discovery_list.appendChild(service_item);
         },
-        addDevice: function (device, typ) {
+        addDevice: function (device, typ, paired = false) {
             var listItem = d.createElement('button');
             listItem.setAttribute('class', 'form-control btn btn-default active');
             listItem.setAttribute('type', 'button');
@@ -207,7 +216,12 @@ d.addEventListener('deviceready', function(){
                 wifiTabInit.show();
                 return false;
             };
-            device_list.appendChild(listItem);
+            if (paired) {
+              device_list_paired.appendChild(listItem);
+            } else {
+              device_list_unpaired.appendChild(listItem);
+            }
+
         },
         discoveryEnable: function() {
            discovery_enabled = true;
@@ -244,7 +258,7 @@ d.addEventListener('deviceready', function(){
         },
         connect: function() {
             if (ble_type === 'serial') {
-                    console.log("serial: connecting to "+ble_id)
+                    d.getElementById('ble_msg_foot').innerText = "serial: connecting to "+ble_id;
                     bluetoothSerial.connect(
                         ble_id,         // device to connect
                         blue.openPort,  // start listening
