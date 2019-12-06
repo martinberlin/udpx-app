@@ -15,13 +15,14 @@ let ip = d.getElementById('esp32_ip'),
     millis_frame = d.getElementById('millis_frame'),
     protocol = d.getElementById('protocol'),
     transmission = d.getElementById('transmission'),
-    wifi_msg = d.getElementById('wifi_msg'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
     wifi_store = d.getElementById('wifi_store'),
     wifi_ssid = d.getElementById('wifi_ssid'),
-    wifi_pass = d.getElementById('wifi_pass');
-let socketId, ble_id, ble_type, ble_name;
+    wifi_pass = d.getElementById('wifi_pass'),
+    wifi_msg = d.getElementById('wifi_msg'),
+    wifi_pre = d.getElementById('wifi_pre');
+let socketId, ble_id, ble_type, ble_name, ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -157,6 +158,7 @@ d.addEventListener('deviceready', function(){
             }
         },
         notEnabled: function() {
+            ble_enabled = false;
             blue.showError('BLUETOOTH IS NOT ENABLED');
         },
         removeDiscovery: function (service) {
@@ -165,7 +167,6 @@ d.addEventListener('deviceready', function(){
         },
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
-
             var service_item = d.createElement('button');
             service_item.setAttribute('class', 'form-control btn btn-default active');
             service_item.setAttribute('type', 'button');
@@ -210,9 +211,7 @@ d.addEventListener('deviceready', function(){
                 ble_name = b.target.getAttribute('data-name');
                 wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[4].Tab;
-
-                bluetoothSerial.isConnected(blue.disconnect, blue.connect);
-
+                blue.startConnection();
                 wifiTabInit.show();
                 return false;
             };
@@ -255,6 +254,12 @@ d.addEventListener('deviceready', function(){
               ble.write(ble_id, ble_service_uuid, ble_wifi_uuid, ble_msg, blue.display, blue.showError);
             }
 
+        },
+        startConnection: function() {
+            bluetoothSerial.isEnabled(
+                bluetoothSerial.isConnected(blue.disconnect, blue.connect),
+                blue.notEnabled
+            );
         },
         connect: function() {
             if (ble_type === 'serial') {
@@ -311,8 +316,6 @@ d.addEventListener('deviceready', function(){
                         });
 
                         blue.sendMessage('{"getip":"true"}')
-                    //setTimeout(function(){  }, 500);
-
                     }
                 },
         closePort: function() {
@@ -337,6 +340,16 @@ d.addEventListener('deviceready', function(){
         },
         displayClear: function() {
             wifi_foot_msg.innerHTML = "";
+        },
+        showPreload: function(el) {
+            el.style.visibility = 'visible';
+        },
+        hidePreload: function(el) {
+            el.style.visibility = 'hidden';
+        },
+        postWifiSend: function(){
+            blue.hidePreload(wifi_pre);
+            wifi_msg.innerHTML = 'Check on the antenna tab if the device appears online';
         },
         start: function() {
            bluetoothSerial.isEnabled(
@@ -369,7 +382,9 @@ d.addEventListener('deviceready', function(){
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
          blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
-
+         wifi_msg.innerText = "Sending AP to "+ble_name;
+         blue.showPreload(wifi_pre);
+         setTimeout(blue.postWifiSend(), 5000);
          return false;
     }
 
