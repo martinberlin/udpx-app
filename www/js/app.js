@@ -374,10 +374,6 @@ d.addEventListener('deviceready', function(){
          blue.sendMessage('{"erase":"true"}');
          return false;
       }
-      d.getElementById('ble_getip').onclick = function() {
-         bluetoothSerial.isConnected(blue.disconnect, blue.connectForIp);
-         return false;
-      }
 
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
