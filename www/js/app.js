@@ -32,7 +32,8 @@ let config_tab = d.getElementById('udpx-tab'),
     disco_tab = d.getElementById('disco-tab'),
     disco_msg = d.getElementById('disco_msg'),
     device_list = d.getElementById('device_list'),
-    discovery_list = d.getElementById('discovery_list');
+    discovery_list = d.getElementById('discovery_list'),
+    discovery_enabled = false;
 
 let ble_service_uuid = '0000aaaa-ead2-11e7-80c1-9a214cf093ae';
 let ble_wifi_uuid = '00005555-ead2-11e7-80c1-9a214cf093ae';
@@ -107,17 +108,6 @@ d.addEventListener('deviceready', function(){
        }
     }
 
-    disco_tab.onclick = function() {
-      console.log('discover: mDns')
-       zeroconf.watch('_http._tcp.', 'local.', function(result) {
-           var action = result.action;
-           var service = result.service;
-           if (action == 'resolved') {
-               blue.addDiscovery(service);
-           }
-       });
-    }
-    disco_tab.click();
     // Blue App
     let blue = {
         list: function() {
@@ -153,13 +143,18 @@ d.addEventListener('deviceready', function(){
         notEnabled: function() {
             blue.showError('BLUETOOTH IS NOT ENABLED');
         },
-
+        removeDiscovery: function (service) {
+            if (service.ipv4Addresses.length === 0) return;
+            console.log('Removing service:'+service.ipv4Addresses[0])
+            d.getElementById(service.ipv4Addresses[0]).remove();
+        },
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
 
             var service_item = d.createElement('button');
             service_item.setAttribute('class', 'form-control btn btn-default active');
             service_item.setAttribute('type', 'button');
+            service_item.setAttribute('id', service.ipv4Addresses[0]);
             service_item.dataset.ip = service.ipv4Addresses[0];
 
             // try to guess port from name_PORT if name is formatted correctly
@@ -180,6 +175,7 @@ d.addEventListener('deviceready', function(){
                 }
                 let port_part = (port.value !== '') ? ':'+port.value : '';
                 disco_msg.innerText = "Setting IP to "+ip.value+port_part;
+                blue.discoveryDisable();
                 return false;
             };
             discovery_list.appendChild(service_item);
@@ -207,7 +203,30 @@ d.addEventListener('deviceready', function(){
             };
             device_list.appendChild(listItem);
         },
-
+        discoveryEnable: function() {
+           discovery_enabled = true;
+           zeroconf.watch('_http._tcp.', 'local.', function(result) {
+                var action = result.action;
+                var service = result.service;
+                switch (action) {
+                   case 'resolved':
+                     blue.addDiscovery(service);
+                     break;
+                   case 'removed':
+                     blue.removeDiscovery(service);
+                     break;
+                     }
+           });
+        },
+        discoveryDisable: function() {
+            discovery_enabled = false;
+            zeroconf.unwatch('_http._tcp.', 'local.',
+            function() {
+               console.log('unwatch success')
+            },function(error) {
+               console.log('unwatch error:'+error)
+            })
+        },
         sendMessage: function(message) {
             if (ble_type === 'serial') {
               bluetoothSerial.write(message+ "\n");
@@ -383,7 +402,12 @@ d.addEventListener('deviceready', function(){
             break;
         }
     };
-    
+    // Discovery of .local
+    disco_tab.onclick = function() {
+      blue.discoveryEnable();
+    }
+    disco_tab.click();
+
     canvas.width = parseInt(v_width.value);
     canvas.height = parseInt(v_height.value)*parseInt(v_units.value);
 
