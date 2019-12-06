@@ -25,15 +25,18 @@ let socketId, ble_id, ble_type, ble_name;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
-    console.log('cw:'+cw);
+
 let storage = window.localStorage;
 let isSocketOpen = false;
-let configTab = d.getElementById('udpx-tab'),
-    device_list = d.getElementById('device_list');
+let config_tab = d.getElementById('udpx-tab'),
+    disco_tab = d.getElementById('disco-tab'),
+    disco_msg = d.getElementById('disco_msg'),
+    device_list = d.getElementById('device_list'),
+    discovery_list = d.getElementById('discovery_list');
 
 let ble_service_uuid = '0000aaaa-ead2-11e7-80c1-9a214cf093ae';
 let ble_wifi_uuid = '00005555-ead2-11e7-80c1-9a214cf093ae';
-let tabsCollection = configTab.getElementsByTagName('A');
+let tabsCollection = config_tab.getElementsByTagName('A');
 // typescript doesn't polyfill lib entries
 if (!Object.entries) {
   Object.entries = function( obj ){
@@ -64,26 +67,10 @@ d.addEventListener('deviceready', function(){
         height: true
       });
     }
-
+    // mDns discovery
     var zeroconf = cordova.plugins.zeroconf;
     zeroconf.registerAddressFamily = 'ipv4';
     zeroconf.watchAddressFamily = 'ipv4';
-    zeroconf.getHostname(function success(hostname){
-        console.log(hostname); // ipad-of-becvert.local.
-    });
-    console.log('discover: mDns')
-   zeroconf.watch('_http._tcp.', 'local.', function(result) {
-   console.log(result)
-       var action = result.action;
-       var service = result.service;
-       if (action == 'added') {
-           console.log('service added', service);
-       } else if (action == 'resolved') {
-           console.log('service resolved', service);
-       } else {
-           console.log('service removed', service);
-       }
-   });
 
     // Start - EventListeners
     loadFormState()
@@ -120,6 +107,17 @@ d.addEventListener('deviceready', function(){
        }
     }
 
+    disco_tab.onclick = function() {
+      console.log('discover: mDns')
+       zeroconf.watch('_http._tcp.', 'local.', function(result) {
+           var action = result.action;
+           var service = result.service;
+           if (action == 'resolved') {
+               blue.addDiscovery(service);
+           }
+       });
+    }
+    disco_tab.click();
     // Blue App
     let blue = {
         list: function() {
@@ -157,15 +155,44 @@ d.addEventListener('deviceready', function(){
             blue.showError('BLUETOOTH IS NOT ENABLED');
         },
 
+        addDiscovery: function (service) {
+            if (service.ipv4Addresses.length === 0) return;
+
+            var service_item = d.createElement('button');
+            service_item.setAttribute('class', 'form-control btn btn-default active');
+            service_item.setAttribute('type', 'button');
+            service_item.dataset.ip = service.ipv4Addresses[0];
+
+            // try to guess port from name_PORT if name is formatted correctly
+            name_parts = service.name.split('_');
+
+            if (name_parts.length>1) {
+               service_item.dataset.port = name_parts[1];
+            } else {
+               service_item.dataset.port = '';
+            }
+
+            service_item.innerHTML = service.name;
+
+            service_item.onclick = function(b) {
+                ip.value = b.target.getAttribute('data-ip');
+                if (b.target.getAttribute('data-port').length) {
+                 port.value = b.target.getAttribute('data-port');
+                }
+                let port_part = (port.value !== '') ? ':'+port.value : '';
+                disco_msg.innerText = "Setting IP to "+ip.value+port_part;
+                return false;
+            };
+            discovery_list.appendChild(service_item);
+        },
         addDevice: function (device, typ) {
-            var listItem = d.createElement('button'),
-                html =  device.name + ' ' + device.id;
+            var listItem = d.createElement('button');
             listItem.setAttribute('class', 'form-control btn btn-default active');
             listItem.setAttribute('type', 'button');
             listItem.dataset.id = device.id;
             listItem.dataset.type = typ;
             listItem.dataset.name = device.name;
-            listItem.innerHTML = html;
+            listItem.innerHTML = device.name;
 
             listItem.onclick = function(b) {
                 ble_id = b.target.getAttribute('data-id');
