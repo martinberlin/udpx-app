@@ -144,9 +144,9 @@ d.addEventListener('deviceready', function(){
             blue.showError('BLUETOOTH IS NOT ENABLED');
         },
         removeDiscovery: function (service) {
-            if (service.ipv4Addresses.length === 0) return;
-            console.log('Removing service:'+service.ipv4Addresses[0])
-            d.getElementById(service.ipv4Addresses[0]).remove();
+            if (typeof d.getElementById(service.name) == 'undefined') return;
+            console.log('Removing service:'+service.name)
+            d.getElementById(service.name).remove();
         },
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
@@ -154,7 +154,7 @@ d.addEventListener('deviceready', function(){
             var service_item = d.createElement('button');
             service_item.setAttribute('class', 'form-control btn btn-default active');
             service_item.setAttribute('type', 'button');
-            service_item.setAttribute('id', service.ipv4Addresses[0]);
+            service_item.setAttribute('id', service.name);
             service_item.dataset.ip = service.ipv4Addresses[0];
 
             // try to guess port from name_PORT if name is formatted correctly
