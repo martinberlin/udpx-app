@@ -1,4 +1,4 @@
-let VERSION = '1.0.9';
+let VERSION = '1.1.0';
 
 let d = document;
 let v = d.getElementById('video');
@@ -81,6 +81,7 @@ d.addEventListener('deviceready', function(){
     }
     d.getElementById('ct-tab').onclick = function() {
      video_c.style.display = 'block';
+     validateIp(ip.value, false);
     }
     d.getElementById('main-form').onchange = function() {
         saveFormState();
@@ -92,11 +93,16 @@ d.addEventListener('deviceready', function(){
 
     // Send udp message
     d.getElementById('send_udp').onclick = function() {
-        udp_text = d.getElementById('udp_text').value;
-        udp_buf = str2buffer(udp_text);
-        chrome.sockets.udp.send(socketId, udp_buf , ip.value, parseInt(port.value), function() {
-            transmission.innerText = "Sending "+ udp_text;
-        });
+        if (validateIp(ip.value, true)) {
+            if (!isSocketOpen) {
+                openSocket();
+              }
+            udp_text = d.getElementById('udp_text').value;
+            udp_buf = str2buffer(udp_text);
+            chrome.sockets.udp.send(socketId, udp_buf , ip.value, parseInt(port.value), function() {
+                transmission.innerText = "Sending "+ udp_text;
+            });
+        }
         return false;
     };
 
