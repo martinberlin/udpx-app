@@ -29,7 +29,8 @@ let cw = parseInt(v_width.value),
 let storage = window.localStorage;
 let isSocketOpen = false;
 let configTab = d.getElementById('udpx-tab'),
-    ble_start = d.getElementById('ble_start');
+    device_list = d.getElementById('device_list');
+
 let ble_service_uuid = '0000aaaa-ead2-11e7-80c1-9a214cf093ae';
 let ble_wifi_uuid = '00005555-ead2-11e7-80c1-9a214cf093ae';
 let tabsCollection = configTab.getElementsByTagName('A');
@@ -123,7 +124,7 @@ d.addEventListener('deviceready', function(){
     let blue = {
         list: function() {
             video_c.style.display = 'none';
-            deviceList.innerHTML = '';
+            device_list.innerHTML = '';
 
             ble.startScan([], blue.onDiscoverBle, function(error) {
                console.log(error);
@@ -178,7 +179,7 @@ d.addEventListener('deviceready', function(){
                 wifiTabInit.show();
                 return false;
             };
-            deviceList.appendChild(listItem);
+            device_list.appendChild(listItem);
         },
 
         sendMessage: function(message) {
@@ -299,11 +300,6 @@ d.addEventListener('deviceready', function(){
          bluetoothSerial.isConnected(blue.disconnect, blue.connectForIp);
          return false;
       }
-     ble_start.onclick = function() {
-       // check if Bluetooth is on:
-       blue.start();
-       return false;
-     }
 
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
