@@ -1,4 +1,4 @@
-let VERSION = '1.0.8';
+let VERSION = '1.0.9';
 
 let d = document;
 let v = d.getElementById('video');
@@ -64,7 +64,7 @@ d.addEventListener('deviceready', function(){
     for (var i = 0; i < tabsCollection.length; i++) {
       new Tab(tabsCollection[i],
       {
-        height: true
+        height: false
       });
     }
     // mDns discovery
@@ -130,13 +130,12 @@ d.addEventListener('deviceready', function(){
 
             setTimeout(ble.stopScan, 1000,
                 function() {
-                console.log('bluetoothSerial.list');
                 bluetoothSerial.list(
                     function(bs) {
                         for (var i in bs) {
                             blue.addDevice(bs[i], 'serial')
                         }
-                        d.getElementById('ble_msg').innerText = 'Press to configure WiFi';
+                        d.getElementById('ble_msg').innerText = 'Bluetooth scan. Select target:';
                     },
                     function(error) {
                         console.log(JSON.stringify(error));
