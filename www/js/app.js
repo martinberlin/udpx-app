@@ -172,7 +172,7 @@ d.addEventListener('deviceready', function(){
                 ble_type = b.target.getAttribute('data-type');
                 ble_name = b.target.getAttribute('data-name');
                 wifi_msg.innerText = "Target: "+ble_name;
-                let wifiTabInit = tabsCollection[3].Tab;
+                let wifiTabInit = tabsCollection[4].Tab;
 
                 bluetoothSerial.isConnected(blue.disconnect, blue.connect);
 
