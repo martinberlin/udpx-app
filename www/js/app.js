@@ -124,7 +124,7 @@ d.addEventListener('deviceready', function(){
             device_list_unpaired.innerHTML = '';
             d.getElementById('ble_msg_foot').innerText = '';
             ble.startScan([], blue.onDiscoverBle, function(error) {
-               console.log(error);
+               ble_msg.innerText = error;
             });
 
             setTimeout(ble.stopScan, 1000,
@@ -168,7 +168,7 @@ d.addEventListener('deviceready', function(){
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
             let buttonClass = 'btn-default';
-            console.log(service.name,ble_mac,service.name.indexOf(ble_mac))
+            //console.log(service.name,ble_mac,service.name.indexOf(ble_mac))
             if (ble_mac !== '' && service.name.indexOf(ble_mac) !== -1) {
                 buttonClass = 'btn-success';
             };
@@ -244,7 +244,7 @@ d.addEventListener('deviceready', function(){
                      break;
                      }
                 if (ble_mac !== '') {
-                   disco_msg.innerText = 'Last connected: '+ble_mac+' (green)';
+                   disco_msg.innerHTML = 'Last connected: <span style="color:green">'+ble_mac+'</span>';
                 }
            });
         },
@@ -355,7 +355,7 @@ d.addEventListener('deviceready', function(){
         },
         postWifiSend: function(){
             blue.hidePreload(wifi_pre);
-            wifi_msg.innerHTML = 'Check on the antenna tab if the device appears online';
+            wifi_msg.innerHTML = 'Check on the antenna tab please';
         },
         start: function() {
            bluetoothSerial.isEnabled(
