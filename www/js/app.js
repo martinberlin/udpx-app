@@ -22,7 +22,7 @@ let ip = d.getElementById('esp32_ip'),
     wifi_pass = d.getElementById('wifi_pass'),
     wifi_msg = d.getElementById('wifi_msg'),
     wifi_pre = d.getElementById('wifi_pre');
-let socketId, ble_id, ble_type, ble_name, ble_enabled = true;
+let socketId, ble_id, ble_type, ble_name, ble_mac = '', ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
@@ -167,8 +167,14 @@ d.addEventListener('deviceready', function(){
         },
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
+            let buttonClass = 'btn-default';
+            console.log(service.name,ble_mac,service.name.indexOf(ble_mac))
+            if (ble_mac !== '' && service.name.indexOf(ble_mac) !== -1) {
+                buttonClass = 'btn-success';
+            };
+
             var service_item = d.createElement('button');
-            service_item.setAttribute('class', 'form-control btn btn-default active');
+            service_item.setAttribute('class', 'form-control btn active '+ buttonClass);
             service_item.setAttribute('type', 'button');
             service_item.setAttribute('id', service.name);
             service_item.dataset.ip = service.ipv4Addresses[0];
@@ -197,18 +203,20 @@ d.addEventListener('deviceready', function(){
             discovery_list.appendChild(service_item);
         },
         addDevice: function (device, typ, paired = false) {
+            device_mac = (typeof device.address !== 'undefined') ? device.address.replace(/:/g,'') :'';
             var listItem = d.createElement('button');
             listItem.setAttribute('class', 'form-control btn btn-default active');
             listItem.setAttribute('type', 'button');
             listItem.dataset.id = device.id;
             listItem.dataset.type = typ;
             listItem.dataset.name = device.name;
+            listItem.dataset.mac = device_mac.substring(0,10);
             listItem.innerHTML = device.name;
-
             listItem.onclick = function(b) {
                 ble_id = b.target.getAttribute('data-id');
                 ble_type = b.target.getAttribute('data-type');
                 ble_name = b.target.getAttribute('data-name');
+                ble_mac = b.target.getAttribute('data-mac');
                 wifi_msg.innerText = "Target: "+ble_name;
                 let wifiTabInit = tabsCollection[4].Tab;
                 blue.startConnection();
@@ -235,16 +243,17 @@ d.addEventListener('deviceready', function(){
                      blue.removeDiscovery(service);
                      break;
                      }
+                if (ble_mac !== '') {
+                   disco_msg.innerText = 'Last connected: '+ble_mac+' (green)';
+                }
            });
         },
         discoveryDisable: function() {
             discovery_enabled = false;
             zeroconf.unwatch('_http._tcp.', 'local.',
-            function() {
-               console.log('unwatch success')
-            },function(error) {
-               console.log('unwatch error:'+error)
-            })
+            function() {},function(error) {
+               disco_msg.innerText = 'unwatch error:'+error;
+            });
         },
         sendMessage: function(message) {
             if (ble_type === 'serial') {
@@ -285,7 +294,6 @@ d.addEventListener('deviceready', function(){
                         }
                 },
         disconnect: function () {
-             console.log("Disconnecting "+ble_id)
              if (ble_type === 'serial') {
                     bluetoothSerial.disconnect(
                         blue.closePort,     // stop listening to the port
@@ -309,7 +317,6 @@ d.addEventListener('deviceready', function(){
         openPortForIp: function() {
 
                     if (ble_type === 'serial') {
-                    console.log('openPortForIp and subscribing')
                         bluetoothSerial.subscribe('\n', function (data) {
                             blue.displayClear();
                             blue.display(data);
@@ -319,7 +326,6 @@ d.addEventListener('deviceready', function(){
                     }
                 },
         closePort: function() {
-            console.log('closePort')
             if (ble_type === 'serial') {
                 bluetoothSerial.unsubscribe(
                         function (data) {
@@ -377,11 +383,26 @@ d.addEventListener('deviceready', function(){
 
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
-         blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
-         wifi_msg.innerText = "Sending AP to "+ble_name;
-         blue.showPreload(wifi_pre);
-         setTimeout(blue.postWifiSend(), 5000);
-         return false;
+        if (wifi_ssid.value !== '' || wifi_ssid.value !== '') {
+             blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
+             wifi_msg.innerText = "Sending AP to "+ble_name;
+             blue.showPreload(wifi_pre);
+             setTimeout(blue.postWifiSend, 5000);
+        } else {
+           wifi_msg.innerHTML = '<span style="color:red">Please set a valid SSID and password</span>';
+        }
+        if (wifi_ssid.value === '') {
+           wifi_ssid.style.borderColor = "red";
+        } else {
+           wifi_ssid.style.borderColor = "black";
+        }
+        if (wifi_pass.value === '') {
+           wifi_pass.style.borderColor = "red";
+        } else {
+           wifi_pass.style.borderColor = "black";
+        }
+
+        return false;
     }
 
     video_select.onchange = function() {
@@ -391,7 +412,6 @@ d.addEventListener('deviceready', function(){
             ch = parseInt(v_height.value)*parseInt(v_units.value);
             canvas.width = parseInt(v_width.value);
             canvas.height = ch;
-            console.log('width:'+canvas.width)
         }
     };
     ip.onchange = function() {
@@ -644,7 +664,7 @@ function openSocket() {
         chrome.sockets.udp.bind(socketId,
             "0.0.0.0", 0, function(result) {
               if (result < 0) {
-                console.log("Error binding socket");
+                transmission.innerText = "Error binding socket";
                 isSocketOpen = false;
                 return;
               }
