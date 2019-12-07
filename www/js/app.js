@@ -1,4 +1,4 @@
-let VERSION = '1.1.1';
+let VERSION = '1.1.21';
 
 let d = document;
 let v = d.getElementById('video');
@@ -383,7 +383,7 @@ d.addEventListener('deviceready', function(){
 
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
-        if (wifi_ssid.value !== '' || wifi_ssid.value !== '') {
+        if (wifi_ssid.value !== '' && wifi_pass.value !== '') {
              blue.sendMessage('{"ssidPrim":"'+wifi_ssid.value+'","pwPrim":"'+wifi_pass.value+'","ssidSec":"ssid2","pwSec":""}');
              wifi_msg.innerText = "Sending AP to "+ble_name;
              blue.showPreload(wifi_pre);
