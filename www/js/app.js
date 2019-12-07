@@ -65,10 +65,7 @@ d.addEventListener('deviceready', function(){
     };
     // Bootstrap tabsCollection
     for (var i = 0; i < tabsCollection.length; i++) {
-      new Tab(tabsCollection[i],
-      {
-        height: false
-      });
+      new Tab(tabsCollection[i],{});
     }
     // mDns discovery
     var zeroconf = cordova.plugins.zeroconf;
@@ -408,10 +405,8 @@ d.addEventListener('deviceready', function(){
     video_select.onchange = function() {
         if (video_select.value !== '') {
             cleanTransmission();
+            recalculateCanvas();
             v.setAttribute('src','video/'+video_select.value);
-            ch = parseInt(v_height.value)*parseInt(v_units.value);
-            canvas.width = parseInt(v_width.value);
-            canvas.height = ch;
         }
     };
     ip.onchange = function() {
@@ -421,25 +416,21 @@ d.addEventListener('deviceready', function(){
         cleanTransmission();
     };
     v_width.onchange = function() {
-            cleanTransmission();
-            cw = parseInt(v_width.value)
-            canvas.width = cw
-        }
+        cleanTransmission();
+        recalculateCanvas();
+    }
     v_height.onchange = function() {
         cleanTransmission();
-        ch = parseInt(v_height.value)*parseInt(v_units.value);
-        canvas.height = ch;
+        recalculateCanvas();
     }
     v_units.onchange = function() {
-        ch = parseInt(v_height.value)*parseInt(v_units.value);
-        canvas.height = ch;
+        recalculateCanvas();
         cleanTransmission();
     }
     protocol.onchange = function() {
         saveFormState();
         cleanTransmission();
-        ch = parseInt(v_height.value)*parseInt(v_units.value);
-        canvas.height = ch;
+        recalculateCanvas();
         switch (protocol.value) {
             case 'bro888':
             case 'rgb888':
@@ -458,13 +449,10 @@ d.addEventListener('deviceready', function(){
       blue.discoveryEnable();
     }
     disco_tab.click();
-
-    canvas.width = parseInt(v_width.value);
-    canvas.height = parseInt(v_height.value)*parseInt(v_units.value);
+    recalculateCanvas();
 
     v.addEventListener('play', function(){
-        cw = parseInt(v_width.value)
-        ch = parseInt(v_height.value)*parseInt(v_units.value)
+      recalculateCanvas()
       if (!isSocketOpen) {
         openSocket();
       }
@@ -656,6 +644,15 @@ function drawImage(c,w,h) {
         }
     }
     convertChannel(pixels);
+}
+
+function recalculateCanvas() {
+    unitH = parseInt(v_height.value);
+    cw = parseInt(v_width.value);
+    ch = parseInt(v_height.value)*parseInt(v_units.value);
+    
+    canvas.width = cw;
+    canvas.height = ch;
 }
 
 function openSocket() {
