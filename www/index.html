@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="row">
                     <div class="col-xs-10">
                         <img id="udpx" src="./assets/udpx-logo.png">
@@ -29,6 +29,10 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" id="video-c">
                 <div class="row">
                     <div class="col-xs-12 video-container">
                         <video id="video" class="video" src="video/01.mp4" controls></video>
@@ -51,20 +55,29 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist" id="udpx-tab">
                         <li role="presentation">
-                            <a href="#vt" id="vt-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="vt" aria-expanded="false">
-                            Video
-                            </a>
+                            <a href="#vt" id="vt-tab" role="tab" data-toggle="tab" aria-controls="vt">Video</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#ct" id="ct-tab" role="tab" data-toggle="tab" aria-controls="ct">Esp</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#bt" id="ble-tab" role="tab" data-toggle="tab" aria-controls="bt">Config</a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="#ct" id="ct-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="ct" aria-expanded="true">
-                            Controller
-                        </a>
+                            <a href="#dt" id="disco-tab" role="tab" data-toggle="tab" aria-controls="dt">
+                                <svg class="svg-icon" viewBox="0 0 20 14" width="20">
+                                    <path d="M15.684,16.959L10.879,8.52c0.886-0.343,1.517-1.193,1.517-2.186c0-1.296-1.076-2.323-2.396-2.323S7.604,5.037,7.604,6.333c0,0.993,0.63,1.843,1.517,2.186l-4.818,8.439c-0.189,0.311,0.038,0.708,0.412,0.708h10.558C15.645,17.667,15.871,17.27,15.684,16.959 M8.562,6.333c0-0.778,0.645-1.382,1.438-1.382s1.438,0.604,1.438,1.382c0,0.779-0.645,1.412-1.438,1.412S8.562,7.113,8.562,6.333 M5.55,16.726L10,8.91l4.435,7.815H5.55z M15.285,9.62c1.26-2.046,1.26-4.525,0-6.572c-0.138-0.223-0.064-0.512,0.162-0.646c0.227-0.134,0.521-0.063,0.658,0.16c1.443,2.346,1.443,5.2,0,7.546c-0.236,0.382-0.641,0.17-0.658,0.159C15.221,10.131,15.147,9.842,15.285,9.62 M13.395,8.008c0.475-1.063,0.475-2.286,0-3.349c-0.106-0.238,0.004-0.515,0.246-0.62c0.242-0.104,0.525,0.004,0.632,0.242c0.583,1.305,0.583,2.801,0,4.106c-0.214,0.479-0.747,0.192-0.632,0.242C13.398,8.523,13.288,8.247,13.395,8.008 M3.895,10.107c-1.444-2.346-1.444-5.2,0-7.546c0.137-0.223,0.431-0.294,0.658-0.16c0.226,0.135,0.299,0.424,0.162,0.646c-1.26,2.047-1.26,4.525,0,6.572c0.137,0.223,0.064,0.512-0.162,0.646C4.535,10.277,4.131,10.489,3.895,10.107 M5.728,8.387c-0.583-1.305-0.583-2.801,0-4.106c0.106-0.238,0.39-0.346,0.631-0.242c0.242,0.105,0.353,0.382,0.247,0.62c-0.475,1.063-0.475,2.286,0,3.349c0.106,0.238-0.004,0.515-0.247,0.62c-0.062,0.027-0.128,0.04-0.192,0.04C5.982,8.668,5.807,8.563,5.728,8.387"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#wt" id="wi-tab" role="tab" data-toggle="tab" aria-controls="wi">+</a>
                         </li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane" id="vt">
+                        <div role="tabpanel" class="tab-pane" id="vt" aria-labelledby="vt-tab">
 
                             <div class="form-group row">
                                 <div class="col-xs-4">
@@ -74,7 +87,7 @@
                                 </div>
                                 <div class="col-xs-4">
                                     <label for="v_height">heigth</label>
-                                    <input id="v_height" name="v_height" type="number" class="form-control form-control-sm" maxlength="3" value="11"
+                                    <input id="v_height" name="v_height" type="number" class="form-control form-control-sm" maxlength="3" value="3"
                                            required>
                                 </div>
                                 <div class="col-xs-4">
@@ -86,7 +99,7 @@
 
                             <div class="form-group row">
                                 <div class="col-xs-4">
-                                    <label for="video_select">Examples:</label>
+                                    <label for="video_select">Videos:</label>
                                     <select id="video_select" class="form-control form-control-sm">
                                         <option value="">Select test video</option>
                                         <option value="01.mp4">Screen-test</option>
@@ -109,21 +122,23 @@
                                 <div class="col-xs-4">
                                     <label for="millis_frame">ms/Frame</label>
                                     <input id="millis_frame" name="millis_frame" type="number" class="form-control form-control-sm"
-                                           maxlength="3" value="100" required>
+                                           maxlength="3" value="20" required>
                                 </div>
+
                                 <div class="col-xs-4">
                                     <label for="bro_quality">Br quality</label>
                                     <input id="bro_quality" name="bro_quality" type="number" class="form-control form-control-sm"
-                                           maxlength="1" min="1" max="11" value="4" required>
+                                           maxlength="1" min="1" max="11" value="3" required>
                                 </div>
 
                                 <div class="col-xs-4">
                                     <canvas id="c"></canvas>
+                                    <input id="fps" name="fps" type="hidden" class="form-control form-control-sm" maxlength="4">
                                 </div>
                             </div>
-
                         </div>
-                        <div role="tabpanel" class="tab-pane active" id="ct">
+
+                        <div role="tabpanel" class="tab-pane" id="ct" aria-labelledby="ct-tab">
                             <div class="form-group row">
                                 <div class="col-xs-5">
                                     <label for="esp32_ip" class="col-form-label"><b>Espressif IP</b></label>
@@ -138,8 +153,8 @@
                                 <div class="col-xs-4">
                                     <label for="protocol" class="col-form-label">Protocol</label>
                                     <select id="protocol" class="form-control form-control-sm">
-                                        <option value="pixels">Pixels</option>
-                                        <option value="pixbro" selected>Pixels Brotli</option>
+                                        <option value="pixels" selected>Pixels</option>
+                                        <option value="pixbro" >Pixels Brotli</option>
                                         <option value="rgb888">RGB888</option>
                                         <option value="bro888">BRO888</option>
                                     </select>
@@ -164,6 +179,93 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <div role="tabpanel" class="tab-pane" id="bt" aria-labelledby="bt-tab">
+
+                            <div class="form-group row">
+                                <div class="col-xs-12" style="margin-top:0.8em" id="ble_msg">
+                                Please turn on Bluetooth
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-3">Paired:</div>
+                                <div class="col-xs-9" id="device_list_paired">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-3">Unpaired:</div>
+                                <div class="col-xs-9" id="device_list_unpaired">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-3" id="ble_msg_foot">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane active in" id="dt" aria-labelledby="dt-tab">
+
+                            <div class="form-group row">
+                                <div class="col-xs-12" style="margin-top:0.8em" id="disco_msg">
+                                    WiFi scan of .local devices
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12" id="discovery_list">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="wt" aria-labelledby="wt-tab">
+                            <div class="form-group row" style="height: 24px">
+                                <div class="col-md-3 col-xs-3"></div>
+                                <div class="col-md-2 col-xs-2 text-center invisible" id="wifi_pre">
+                                    <img src="assets/preload.gif">
+                                </div>
+                                <div class="col-md-7 col-xs-7" id="wifi_msg"></div>
+                            </div>
+                           
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <label for="wifi_ssid">WiFi SSID</label>
+                                    <input id="wifi_ssid" name="wifi_ssid" type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <label for="wifi_pass">Password</label>
+                                    <input id="wifi_pass" name="wifi_pass" type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12 form-check">
+                                    <input id="wifi_store" name="wifi_store" type="checkbox" class="form-check-input">
+                                    <label for="wifi_store" class="form-check-label">Store password in local storage</label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-6">
+                                    <button class="form-control btn btn-warning" id="ble_reset">Reset ESP32</button>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button class="form-control btn btn-primary" id="ble_set_config">Send config</button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-6">
+                                    <button class="form-control btn btn-danger" id="ble_erase">Erase config</button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <div class="col-xs-12" id="wifi_foot_msg">
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 
             </form>
