@@ -107,9 +107,9 @@ d.addEventListener('deviceready', function(){
 
     wifi_store.onchange = function() {
        if (wifi_store.checked) {
-          transmission.innerHTML = '<span style="color:red"><b>Security:</b> When you are done leave this unchecked</span>';
+          wifi_msg.innerHTML = '<span style="color:red"><b>Security:</b> When you are done leave it unchecked</span>';
        } else {
-          transmission.innerText = 'Thanks! Password was removed from local storage'
+          wifi_msg.innerText = 'Password was removed from local storage'
        }
     }
 
@@ -362,8 +362,20 @@ d.addEventListener('deviceready', function(){
            );
         }
      };
-
+      d.getElementById('vt-tab').onclick = function() {
+          blue.discoveryDisable();
+          return false;
+      }
+      d.getElementById('ct-tab').onclick = function() {
+          blue.discoveryDisable();
+          return false;
+      }
+      d.getElementById('wi-tab').onclick = function() {
+          blue.discoveryDisable();
+          return false;
+      }
       d.getElementById('ble-tab').onclick = function() {
+        blue.discoveryDisable();
         blue.displayClear();
         blue.start();
         return false;
