@@ -1,4 +1,4 @@
-let VERSION = '1.1.21';
+let VERSION = '1.1.22';
 
 let d = document;
 let v = d.getElementById('video');
@@ -149,7 +149,7 @@ d.addEventListener('deviceready', function(){
             );
         },
         onDiscoverBle: function(device) {
-            // Filter devices starting by ESP*
+            // Filter devices starting by ESP* Note for BLE only devices starting with ESP are supported
             if (typeof(device.name) !== 'undefined' && device.name.match(/ESP/i)) {
                 blue.addDevice(device, 'ble')
             }
@@ -200,6 +200,7 @@ d.addEventListener('deviceready', function(){
             discovery_list.appendChild(service_item);
         },
         addDevice: function (device, typ, paired = false) {
+            if (typeof device === 'undefined' || typeof device.name === 'undefined') return;
             device_mac = (typeof device.address !== 'undefined') ? device.address.replace(/:/g,'') :'';
             var listItem = d.createElement('button');
             listItem.setAttribute('class', 'form-control btn btn-default active');
