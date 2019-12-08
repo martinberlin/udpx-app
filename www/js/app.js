@@ -225,7 +225,7 @@ d.addEventListener('deviceready', function(){
         },
         discoveryEnable: function() {
            discovery_enabled = true;
-           setTimeout(blue.discoveryShowScan() , 2000);
+
            zeroconf.watch('_http._tcp.', 'local.', function(result) {
                 var action = result.action;
                 var service = result.service;
@@ -240,8 +240,8 @@ d.addEventListener('deviceready', function(){
                 if (ble_mac !== '') {
                    disco_msg.innerHTML = 'Last connected: <span style="color:green">'+ble_mac+'</span>';
                 }
-
            });
+           setTimeout(blue.discoveryShowScan, 3000);
         },
         discoveryDisable: function() {
             discovery_enabled = false;
