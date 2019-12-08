@@ -168,7 +168,7 @@ d.addEventListener('deviceready', function(){
             service_item.setAttribute('id', service.name);
             service_item.dataset.ip = service.ipv4Addresses[0];
 
-            // try to guess port from name_PORT if name is formatted correctly
+            // Guess port from name_PORT if name is formatted correctly
             name_parts = service.name.split('_');
 
             if (name_parts.length>1) {
@@ -220,8 +220,12 @@ d.addEventListener('deviceready', function(){
             }
 
         },
+        discoveryShowScan: function() {
+            disco_msg.innerText = 'WiFi scanning .local devices';
+        },
         discoveryEnable: function() {
            discovery_enabled = true;
+           setTimeout(blue.discoveryShowScan() , 2000);
            zeroconf.watch('_http._tcp.', 'local.', function(result) {
                 var action = result.action;
                 var service = result.service;
@@ -236,6 +240,7 @@ d.addEventListener('deviceready', function(){
                 if (ble_mac !== '') {
                    disco_msg.innerHTML = 'Last connected: <span style="color:green">'+ble_mac+'</span>';
                 }
+
            });
         },
         discoveryDisable: function() {
@@ -355,33 +360,37 @@ d.addEventListener('deviceready', function(){
         }
      };
 
-      d.getElementById('vt-tab').onclick = function() {
-         blue.discoveryDisable();
-         video_c.style.display = 'block';
-      }
-      d.getElementById('ct-tab').onclick = function() {
-         blue.discoveryDisable();
-         video_c.style.display = 'block';
-         validateIp(ip.value, false);
-      }
-      d.getElementById('wi-tab').onclick = function() {
-         blue.discoveryDisable();
-      }
-      d.getElementById('ble-tab').onclick = function() {
-         blue.discoveryDisable();
-         blue.displayClear();
-         blue.start();
-      }
-      d.getElementById('ble_reset').onclick = function() {
-         blue.displayClear();
-         blue.sendMessage('{"reset":"true"}');
-         return false;
-      }
-      d.getElementById('ble_erase').onclick = function() {
-         blue.displayClear();
-         blue.sendMessage('{"erase":"true"}');
-         return false;
-      }
+     d.getElementById('vt-tab').onclick = function() {
+        blue.discoveryDisable();
+        video_c.style.display = 'block';
+        return false;
+     }
+     d.getElementById('ct-tab').onclick = function() {
+        blue.discoveryDisable();
+        video_c.style.display = 'block';
+        validateIp(ip.value, false);
+        return false;
+     }
+     d.getElementById('wi-tab').onclick = function() {
+        blue.discoveryDisable();
+        return false;
+     }
+     d.getElementById('ble-tab').onclick = function() {
+        blue.discoveryDisable();
+        blue.displayClear();
+        blue.start();
+        return false;
+     }
+     d.getElementById('ble_reset').onclick = function() {
+        blue.displayClear();
+        blue.sendMessage('{"reset":"true"}');
+        return false;
+     }
+     d.getElementById('ble_erase').onclick = function() {
+        blue.displayClear();
+        blue.sendMessage('{"erase":"true"}');
+        return false;
+     }
 
     // Send WiFi configuration to ESP32
     ble_set_config.onclick = function() {
