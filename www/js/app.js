@@ -74,14 +74,6 @@ d.addEventListener('deviceready', function(){
 
     // Start - EventListeners
     loadFormState()
-
-    d.getElementById('vt-tab').onclick = function() {
-     video_c.style.display = 'block';
-    }
-    d.getElementById('ct-tab').onclick = function() {
-     video_c.style.display = 'block';
-     validateIp(ip.value, false);
-    }
     d.getElementById('main-form').onchange = function() {
         saveFormState();
     };
@@ -362,23 +354,23 @@ d.addEventListener('deviceready', function(){
            );
         }
      };
+
       d.getElementById('vt-tab').onclick = function() {
-          blue.discoveryDisable();
-          return false;
+         blue.discoveryDisable();
+         video_c.style.display = 'block';
       }
       d.getElementById('ct-tab').onclick = function() {
-          blue.discoveryDisable();
-          return false;
+         blue.discoveryDisable();
+         video_c.style.display = 'block';
+         validateIp(ip.value, false);
       }
       d.getElementById('wi-tab').onclick = function() {
-          blue.discoveryDisable();
-          return false;
+         blue.discoveryDisable();
       }
       d.getElementById('ble-tab').onclick = function() {
-        blue.discoveryDisable();
-        blue.displayClear();
-        blue.start();
-        return false;
+         blue.discoveryDisable();
+         blue.displayClear();
+         blue.start();
       }
       d.getElementById('ble_reset').onclick = function() {
          blue.displayClear();
