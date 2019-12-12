@@ -521,14 +521,21 @@ function sendUdp(bytesToPost) {
             send.set(compressed, headerBytes.length);
             t1 = performance.now();
             chrome.sockets.udp.send(socketId, send.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                transmission.innerText = sendInfo.bytesSent+" compressed bytes in "+Math.round(t1-t0)+" ms.";
+                transmission.innerText = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
+            });
+        break;
+        case 'pixzip':
+            compressed = flate.zlib_encode_raw(bytesToPost);
+            t1 = performance.now();
+            chrome.sockets.udp.send(socketId, compressed, ip.value, parseInt(port.value), function(sendInfo) {
+                    transmission.innerText = "Zlib took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" bro compressed bytes ";
             });
         break;
         case 'pixbro':
             compressed = compress(bytesToPost, bytesToPost.length, quality.value, lg_window_size);
             t1 = performance.now();
             chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                transmission.innerText = sendInfo.bytesSent+" compressed bytes in "+Math.round(t1-t0)+" ms.";
+                transmission.innerText = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
             });
         break;
         
