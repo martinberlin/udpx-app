@@ -527,8 +527,9 @@ function sendUdp(bytesToPost) {
         case 'pixzip':
             compressed = flate.zlib_encode_raw(bytesToPost);
             t1 = performance.now();
-            chrome.sockets.udp.send(socketId, compressed, ip.value, parseInt(port.value), function(sendInfo) {
-                    transmission.innerText = "Zlib took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" bro compressed bytes ";
+            //console.log(compressed)
+            chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
+                    transmission.innerText = "Zlib took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" bytes ";
             });
         break;
         case 'pixbro':

@@ -170,19 +170,11 @@ function fetchLocal(url) {
  			else {
  				var importObject = wasmImportObjects[wasmModuleId]();
  				var req = fetchLocal(__webpack_require__.p + "flate.module.wasm");
- 				var promise;
- 				if(importObject instanceof Promise && typeof WebAssembly.compileStreaming === 'function') {
- 					promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
- 						return WebAssembly.instantiate(items[0], items[1]);
- 					});
- 				} else if(typeof WebAssembly.instantiateStreaming === 'function') {
- 					promise = WebAssembly.instantiateStreaming(req, importObject);
- 				} else {
- 					var bytesPromise = req.then(function(x) { return x.arrayBuffer(); });
- 					promise = bytesPromise.then(function(bytes) {
- 						return WebAssembly.instantiate(bytes, importObject);
- 					});
- 				}
+                var bytesPromise = req.then(function(x) { return x.arrayBuffer(); });
+                var promise = bytesPromise.then(function(bytes) {
+                    return WebAssembly.instantiate(bytes, importObject);
+                });
+
  				promises.push(installedWasmModules[wasmModuleId] = promise.then(function(res) {
  					return __webpack_require__.w[wasmModuleId] = (res.instance || res).exports;
  				}));
