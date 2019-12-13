@@ -26,7 +26,7 @@ let socketId, ble_id, ble_type, ble_name, ble_mac = '', ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
     unitH = parseInt(v_height.value);
-
+let MTU = 1470; // Max. transport unit ESP32
 let storage = window.localStorage;
 let isSocketOpen = false;
 let config_tab = d.getElementById('udpx-tab'),
@@ -528,28 +528,31 @@ function sendUdp(bytesToPost) {
             send.set(compressed, headerBytes.length);
             t1 = performance.now();
             chrome.sockets.udp.send(socketId, send.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                transmission.innerText = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
+                transmission.textContent = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
             });
         break;
         case 'pixzip':
             compressed = flate.zlib_encode_raw(bytesToPost);
             t1 = performance.now();
-            //console.log(compressed)
             chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                    transmission.innerText = "Zlib took "+Math.round(t1-t0)+" ms. sent "+bytesToPost.length+"/"+sendInfo.bytesSent+" bytes ";
+                transmission.textContent = "Zlib "+Math.round(t1-t0)+" ms "+bytesToPost.length+"/"+sendInfo.bytesSent+" bytes ";
+                transmission.className = (sendInfo.bytesSent>MTU) ? 'error' : 'white';
             });
         break;
         case 'pixbro':
             compressed = compress(bytesToPost, bytesToPost.length, quality.value, lg_window_size);
             t1 = performance.now();
+
             chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                transmission.innerText = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
+                transmission.textContent = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms";
+                transmission.className = (sendInfo.bytesSent>MTU) ? 'error' : 'white';
             });
         break;
         
         default:
             chrome.sockets.udp.send(socketId, bytesToPost.buffer, ip.value, parseInt(port.value), function(sendInfo) {
-                transmission.innerText = "Sending "+sendInfo.bytesSent+" bytes";
+                transmission.textContent = "Sending "+sendInfo.bytesSent+" bytes";
+                transmission.className = (sendInfo.bytesSent>MTU) ? 'error' : 'white';
             });
 
         break;
@@ -600,7 +603,7 @@ function convertChannel(pixels) {
             headerBytes = 5;
         break;
       }
-    //console.log(hByte); // Debug headers
+
     let bufferLen = (pixLength*3)+headerBytes;
     // create an ArrayBuffer with a size in bytes
     var buffer = new ArrayBuffer(bufferLen);
@@ -704,7 +707,6 @@ function openSocket() {
   var URL = window.URL || window.webkitURL
   var displayMessage = function (message, isError) {
     transmission.innerHTML = message
-    transmission.className = isError ? 'error' : 'info'
   }
   canvas.width = parseInt(v_width.value);
   canvas.height = ch;
