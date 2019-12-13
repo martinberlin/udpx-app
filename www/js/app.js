@@ -388,6 +388,7 @@ d.addEventListener('deviceready', function(){
      d.getElementById('ble_erase').onclick = function() {
         blue.displayClear();
         blue.sendMessage('{"erase":"true"}');
+        udpCommand(114); // reset WiFi also via UDP if controller is online
         return false;
      }
 
@@ -431,14 +432,17 @@ d.addEventListener('deviceready', function(){
     v_width.onchange = function() {
         cleanTransmission();
         recalculateCanvas();
+        udpCommand(99); // Turn all pixels off
     }
     v_height.onchange = function() {
         cleanTransmission();
         recalculateCanvas();
+        udpCommand(99);
     }
     v_units.onchange = function() {
         recalculateCanvas();
         cleanTransmission();
+        udpCommand(99);
     }
     protocol.onchange = function() {
         saveFormState();
@@ -762,7 +766,7 @@ function loadFormState() {
 }
 
 function cleanTransmission(){
-    transmission.innerHTML = '';
+    transmission.textContent = '';
     transmission.className = 'white';
 }
 
@@ -802,6 +806,18 @@ function objectFromEntries(iter) {
   }
   return obj;
 }
+// Sends a short command per UDP
+function udpCommand(firstByte) {
+    var buffer = new ArrayBuffer(3);
+    var bytes = new Uint8Array(buffer);
+    bytes[0] = firstByte;
+    bytes[1] = 0;
+    bytes[2] = 0;
+    chrome.sockets.udp.send(socketId, bytes.buffer, ip.value, parseInt(port.value), function(sendInfo) {
+      transmission.textContent = "Sending "+sendInfo.bytesSent+" bytes UDP command";
+    });
+}
+
 // source: http://stackoverflow.com/a/11058858
 function str2buffer(str) {
   var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
