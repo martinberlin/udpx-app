@@ -1,4 +1,4 @@
-let VERSION = '1.1.22';
+let VERSION = '1.1.23';
 
 let d = document;
 let v = d.getElementById('video');
@@ -12,7 +12,7 @@ let ip = d.getElementById('esp32_ip'),
     v_units  = d.getElementById('v_units'),
     video_c = d.getElementById('video-c'),
     video_select = d.getElementById('video_select'),
-    millis_frame = d.getElementById('millis_frame'),
+    millis_frame = d.getElementById('millis_frame'), fps = d.getElementById('fps'),
     protocol = d.getElementById('protocol'),
     transmission = d.getElementById('transmission'),
     quality = d.getElementById('bro_quality'),
@@ -157,7 +157,6 @@ d.addEventListener('deviceready', function(){
         addDiscovery: function (service) {
             if (service.ipv4Addresses.length === 0) return;
             let buttonClass = 'btn-default';
-            //console.log(service.name,ble_mac,service.name.indexOf(ble_mac))
             if (ble_mac !== '' && service.name.indexOf(ble_mac) !== -1) {
                 buttonClass = 'btn-success';
             };
@@ -464,6 +463,14 @@ d.addEventListener('deviceready', function(){
     }
     disco_tab.click();
     recalculateCanvas();
+
+    // FPS <-> ms/Frame
+    fps.onchange = function() {
+      millis_frame.value = (fps.value>0) ? Math.round(1000/fps.value) : 0;
+    }
+    millis_frame.onchange = function() {
+      fps.value = (millis_frame.value>0) ? Math.round(1000/millis_frame.value) : 0;
+    }
 
     v.addEventListener('play', function(){
       recalculateCanvas()

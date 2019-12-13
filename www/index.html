@@ -81,25 +81,7 @@
 
                             <div class="form-group row">
                                 <div class="col-xs-4">
-                                    <label for="v_width">Pix.width</label>
-                                    <input id="v_width" name="v_width"  type="number" class="form-control form-control-sm" maxlength="3" value="44"
-                                           required>
-                                </div>
-                                <div class="col-xs-4">
-                                    <label for="v_height">heigth</label>
-                                    <input id="v_height" name="v_height" type="number" class="form-control form-control-sm" maxlength="3" value="3"
-                                           required>
-                                </div>
-                                <div class="col-xs-4">
-                                    <label for="v_units">units &#9636;</label>
-                                    <input id="v_units" name="v_units" type="number" class="form-control form-control-sm" maxlength="1" value="1"
-                                           required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-xs-4">
-                                    <label for="video_select">Videos:</label>
+                                    <label for="video_select">Demos:</label>
                                     <select id="video_select" class="form-control form-control-sm">
                                         <option value="">Select test video</option>
                                         <option value="01.mp4">Screen-test</option>
@@ -107,50 +89,7 @@
                                         <option value="04.mp4">5,4,3 TV sample</option>
                                     </select>
                                 </div>
-                                <div class="col-xs-4">
-                                    <label for="v_contrast">contrast</label>
-                                    <input id="v_contrast" name="v_contrast" type="text" class="form-control form-control-sm"
-                                           maxlength="3" size="3" value="1.4" required>
-                                </div>
-                                <div class="col-xs-4">
-                                    <label for="v_brightness">bright * N</label>
-                                    <input id="v_brightness" name="v_brightness" type="number" class="form-control form-control-sm"
-                                           maxlength="3" min="0.1" max="1" value="0.1" title="0.1 = 10% / 1 = 100%" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-xs-4">
-                                    <label for="millis_frame">ms/Frame</label>
-                                    <input id="millis_frame" name="millis_frame" type="number" class="form-control form-control-sm"
-                                           maxlength="3" value="20" required>
-                                </div>
-
-                                <div class="col-xs-4">
-                                    <label for="bro_quality">Br quality</label>
-                                    <input id="bro_quality" name="bro_quality" type="number" class="form-control form-control-sm"
-                                           maxlength="1" min="1" max="11" value="3" required>
-                                </div>
-
-                                <div class="col-xs-4">
-                                    <canvas id="c"></canvas>
-                                    <input id="fps" name="fps" type="hidden" class="form-control form-control-sm" maxlength="4">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div role="tabpanel" class="tab-pane" id="ct" aria-labelledby="ct-tab">
-                            <div class="form-group row">
-                                <div class="col-xs-5">
-                                    <label for="esp32_ip" class="col-form-label"><b>Espressif IP</b></label>
-                                    <input id="esp32_ip" name="esp32_ip" type="text" class="col-xs-10 form-control form-control-sm" maxlength="15"
-                                           value="192.168.0.">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label for="udp_port" class="col-form-label">Port</label>
-                                    <input id="udp_port" name="udp_port" type="text" class="form-control form-control-sm" maxlength="5" size="5"
-                                           value="1234">
-                                </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-8">
                                     <label for="protocol" class="col-form-label">Protocol</label>
                                     <select id="protocol" class="form-control form-control-sm">
                                         <option value="pixels" selected>Pixels</option>
@@ -160,6 +99,74 @@
                                         <option value="bro888">BRO888</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-4">
+                                    <label for="v_width">Pix width</label>
+                                    <input id="v_width" name="v_width"  type="number" class="form-control form-control-sm" maxlength="3" value="44"
+                                           required>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="v_height">Heigth</label>
+                                    <input id="v_height" name="v_height" type="number" class="form-control form-control-sm" maxlength="3" value="3"
+                                           required>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="v_units">Units &#9636;</label>
+                                    <input id="v_units" name="v_units" type="number" class="form-control form-control-sm" maxlength="1" value="1"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+
+                                <div class="col-xs-4">
+                                    <label for="fps">FPS</label>
+                                    <input id="fps" name="fps" type="number" class="form-control form-control-sm" maxlength="4" value="50" required>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <label for="bro_quality">Br quality</label>
+                                    <input id="bro_quality" name="bro_quality" type="number" class="form-control form-control-sm"
+                                           maxlength="1" min="1" max="11" value="3" required>
+                                </div>
+
+                                <div class="col-xs-4" id="canvas">
+                                    <canvas id="c"></canvas>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-4">
+                                    <label for="v_contrast">Contrast</label>
+                                    <input id="v_contrast" name="v_contrast" type="text" class="form-control form-control-sm"
+                                           maxlength="3" size="3" value="1.4" required>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="v_brightness">Bright * N</label>
+                                    <input id="v_brightness" name="v_brightness" type="number" class="form-control form-control-sm"
+                                           maxlength="3" min="0.1" max="1" value="0.1" title="0.1 = 10% / 1 = 100%" required>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="millis_frame">ms/Frame</label>
+                                    <input id="millis_frame" name="millis_frame" type="number" class="form-control form-control-sm"
+                                           maxlength="3" value="20" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="ct" aria-labelledby="ct-tab">
+                            <div class="form-group row">
+                                <div class="col-xs-8">
+                                    <label for="esp32_ip" class="col-form-label"><b>Espressif IP</b></label>
+                                    <input id="esp32_ip" name="esp32_ip" type="text" class="col-xs-10 form-control form-control-sm" maxlength="15"
+                                           value="192.168.0.">
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="udp_port" class="col-form-label">Port</label>
+                                    <input id="udp_port" name="udp_port" type="number" class="form-control form-control-sm" maxlength="5" size="5"
+                                           value="1234">
+                                </div>
+
                             </div>
                             <div class="form-group row">
                                 <div class="col-xs-8">

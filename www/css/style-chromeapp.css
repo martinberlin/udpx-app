@@ -8,6 +8,10 @@
     margin-left:-8px;
 }
 
+#canvas {
+    margin-top:6px;
+}
+
 .video-container {
     top: 0;
     bottom: 0;

@@ -99,11 +99,8 @@ function fetchLocal(url) {
                 var t = o[e];
                 if (t) n.push(t);
                 else {
-                // No support for fetch local files in apps ( brotliHost+brotliMime to load remote )
                    let wasmUrl = u.p + "" + {7: relativejs+"165db525e6e2c2f2aa80"}[e] + ".module.wasm";
                     var r, a = i[e]();
-                    console.log(wasmUrl);
-
                     r = fetchLocal(wasmUrl).then(function(e) {
                         return e.arrayBuffer()
                     }).then(function(e) {
