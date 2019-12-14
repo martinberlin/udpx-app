@@ -2,6 +2,14 @@
 
 **udpx is a technology to transport data over WiFi to microcontrollers**
 
+
+### What it can be used for
+
+1. Send a picture over WiFi to a LED controller with [ESP32 udpx firmware](https://github.com/martinberlin/udpx) or [Remora](https://github.com/martinberlin/Remora)
+2. Send over the air Video frames. 
+
+Note that Remora supports only plain Pixels without any compression. udpx supports zlib and brotli as compression algorithms.
+
 ## Android App latest builds
 
 If you want to test this fast using Android, just download and install the udpx app from Play store:
