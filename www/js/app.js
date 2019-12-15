@@ -1,4 +1,4 @@
-let VERSION = '1.1.25';
+let VERSION = '1.1.251';
 
 let d = document;
 let v = d.getElementById('video');
@@ -13,7 +13,7 @@ let ip = d.getElementById('esp32_ip'),
     video_c = d.getElementById('video-c'),
     video_select = d.getElementById('video_select'),
     millis_frame = d.getElementById('millis_frame'), fps = d.getElementById('fps'),
-    protocol = d.getElementById('protocol'),
+    protocol = d.getElementById('protocol'), m_rotate = d.getElementById('m_rotate_lines'),
     transmission = d.getElementById('transmission'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
@@ -573,21 +573,24 @@ function convertChannel(pixels) {
     // ----> Line 12 (module 2)
     let lineCount = 1;
     let cw = parseInt(v_width.value);
-    for (var x = 0; x <= pixLength-cw; x=x+cw) {
-        // Pair modules are mirrored
-        let isModuleImpair = (lineCount <= unitH) ? 0 : 1;
-        // Invert pixels in pair lines for this Led matrix 
-        if (lineCount % 2 === isModuleImpair) {
-            let pixelsInvertedCopy = pixels.slice(x,x+cw);
-            pixelsInvertedCopy.reverse();
 
-            let invIndex = 0;
-            for (var inv = x; inv <= x+cw-1; inv++) {  
-                pixels[inv] = pixelsInvertedCopy[invIndex];
-                invIndex++
+    if (m_rotate.checked) {
+        for (var x = 0; x <= pixLength-cw; x=x+cw) {
+            // Pair modules are mirrored
+            let isModuleImpair = (lineCount <= unitH) ? 0 : 1;
+            // Invert pixels in pair lines for this Led matrix
+            if (lineCount % 2 === isModuleImpair) {
+                let pixelsInvertedCopy = pixels.slice(x,x+cw);
+                pixelsInvertedCopy.reverse();
+
+                let invIndex = 0;
+                for (var inv = x; inv <= x+cw-1; inv++) {
+                    pixels[inv] = pixelsInvertedCopy[invIndex];
+                    invIndex++
+                }
             }
+            lineCount++;
         }
-        lineCount++;
     }
     
     let MSB = parseInt(pixLength/256);
