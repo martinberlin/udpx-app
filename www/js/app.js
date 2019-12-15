@@ -1,4 +1,4 @@
-let VERSION = '1.1.23';
+let VERSION = '1.1.25';
 
 let d = document;
 let v = d.getElementById('video');
