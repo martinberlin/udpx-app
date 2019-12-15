@@ -207,7 +207,7 @@ d.addEventListener('deviceready', function(){
                 ble_name = b.target.getAttribute('data-name');
                 ble_mac = b.target.getAttribute('data-mac');
                 wifi_msg.innerText = "Target: "+ble_name;
-                let wifiTabInit = tabsCollection[4].Tab;
+                let wifiTabInit = tabsCollection[3].Tab;
                 blue.startConnection();
                 wifiTabInit.show();
                 return false;
