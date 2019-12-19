@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-    <widget id="io.cordova.udpx" version="1.1.251"
+    <widget id="io.cordova.udpx" version="1.1.252"
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
