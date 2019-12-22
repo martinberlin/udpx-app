@@ -762,6 +762,7 @@ function saveFormState() {
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
   storage.setItem('protocol', protocol.value);
+  storage.setItem('o_chunk', o_chunk.checked);
 }
   
 /**
@@ -777,6 +778,7 @@ function loadFormState() {
         }
     }
     dropdownSet(protocol, storage.getItem('protocol'));
+    o_chunk.checked = storage.getItem('o_chunk');
 }
 
 function cleanTransmission(){
