@@ -99,7 +99,7 @@ function fetchLocal(url) {
                 var t = o[e];
                 if (t) n.push(t);
                 else {
-                   let wasmUrl = u.p + "" + {7: relativejs+"165db525e6e2c2f2aa80"}[e] + ".module.wasm";
+                   let wasmUrl = u.p + "" + {7: relativejs+"brotli"}[e] + ".module.wasm";
                     var r, a = i[e]();
                     r = fetchLocal(wasmUrl).then(function(e) {
                         return e.arrayBuffer()

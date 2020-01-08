@@ -1,4 +1,4 @@
-let VERSION = '1.1.25';
+let VERSION = '1.1.252';
 
 let d = document;
 let v = d.getElementById('video');
@@ -9,11 +9,11 @@ let ip = d.getElementById('esp32_ip'),
     contrast = d.getElementById('v_contrast'),
     v_width  = d.getElementById('v_width'),
     v_height = d.getElementById('v_height'),
-    v_units  = d.getElementById('v_units'),
-    video_c = d.getElementById('video-c'),
-    video_select = d.getElementById('video_select'),
+    v_units  = d.getElementById('v_units'), o_chunk = d.getElementById('o_chunk'),
+    video_c = d.getElementById('video-c'), o_chunk_label = d.getElementById('o_chunk_label'),
+    video_select = d.getElementById('video_select'), o_chunk_pre = "Set header chunk size to ",
     millis_frame = d.getElementById('millis_frame'), fps = d.getElementById('fps'),
-    protocol = d.getElementById('protocol'),
+    protocol = d.getElementById('protocol'), m_rotate = d.getElementById('m_rotate_lines'),
     transmission = d.getElementById('transmission'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
@@ -432,11 +432,13 @@ d.addEventListener('deviceready', function(){
     v_width.onchange = function() {
         cleanTransmission();
         recalculateCanvas();
+        o_chunk_label.innerText = o_chunk_pre + (v_width.value * v_height.value);
         udpCommand(99); // Turn all pixels off
     }
     v_height.onchange = function() {
         cleanTransmission();
         recalculateCanvas();
+        o_chunk_label.innerText = o_chunk_pre + (v_width.value * v_height.value);
         udpCommand(99);
     }
     v_units.onchange = function() {
@@ -573,25 +575,37 @@ function convertChannel(pixels) {
     // ----> Line 12 (module 2)
     let lineCount = 1;
     let cw = parseInt(v_width.value);
-    for (var x = 0; x <= pixLength-cw; x=x+cw) {
-        // Pair modules are mirrored
-        let isModuleImpair = (lineCount <= unitH) ? 0 : 1;
-        // Invert pixels in pair lines for this Led matrix 
-        if (lineCount % 2 === isModuleImpair) {
-            let pixelsInvertedCopy = pixels.slice(x,x+cw);
-            pixelsInvertedCopy.reverse();
 
-            let invIndex = 0;
-            for (var inv = x; inv <= x+cw-1; inv++) {  
-                pixels[inv] = pixelsInvertedCopy[invIndex];
-                invIndex++
+    if (m_rotate.checked) {
+        for (var x = 0; x <= pixLength-cw; x=x+cw) {
+            // Pair modules are mirrored
+            let isModuleImpair = (lineCount <= unitH) ? 0 : 1;
+            // Invert pixels in pair lines for this Led matrix
+            if (lineCount % 2 === isModuleImpair) {
+                let pixelsInvertedCopy = pixels.slice(x,x+cw);
+                pixelsInvertedCopy.reverse();
+
+                let invIndex = 0;
+                for (var inv = x; inv <= x+cw-1; inv++) {
+                    pixels[inv] = pixelsInvertedCopy[invIndex];
+                    invIndex++
+                }
             }
+            lineCount++;
         }
-        lineCount++;
     }
     
     let MSB = parseInt(pixLength/256);
     let LSB = pixLength - (MSB*256);
+
+    let cMSB = 0;
+    let cLSB = 0;
+    if (o_chunk.checked) {
+        let chunk_size = v_width.value*v_height.value;
+        cMSB = parseInt(chunk_size/256);
+        cLSB = chunk_size - (cMSB*256);
+    }
+
     headerBytes = 6;
     // Header bytes 
     switch (protocol.value) {
@@ -603,7 +617,7 @@ function convertChannel(pixels) {
         break;
         default:
             // 1: p  2: Non used  3 Channel   4 Length LSB   5 Length MSB
-            hByte = [80,0,0,LSB,MSB];
+            hByte = [80,cLSB,cMSB,LSB,MSB];
             headerBytes = 5;
         break;
       }
@@ -748,6 +762,7 @@ function saveFormState() {
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
   storage.setItem('protocol', protocol.value);
+  storage.setItem('o_chunk', o_chunk.checked);
 }
   
 /**
@@ -763,6 +778,7 @@ function loadFormState() {
         }
     }
     dropdownSet(protocol, storage.getItem('protocol'));
+    o_chunk.checked = storage.getItem('o_chunk');
 }
 
 function cleanTransmission(){
