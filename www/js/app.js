@@ -572,14 +572,14 @@ function convertChannel(pixels) {
     // ----> Line 1
     // <---- Line 2
     // ----> Line 3  ...
-    // ----> Line 12 (module 2)
+    // ----> Line 12 (in 2nd Unit but only if the units have impair rows like 11)
     let lineCount = 1;
     let cw = parseInt(v_width.value);
 
     if (m_rotate.checked) {
         for (var x = 0; x <= pixLength-cw; x=x+cw) {
-            // Pair modules are mirrored
-            let isModuleImpair = (lineCount <= unitH) ? 0 : 1;
+            // Pair modules are mirrored only if odd (ex. 11)
+            let isModuleImpair = (lineCount <= unitH && unitH % 2) ? 0 : 1;
             // Invert pixels in pair lines for this Led matrix
             if (lineCount % 2 === isModuleImpair) {
                 let pixelsInvertedCopy = pixels.slice(x,x+cw);
