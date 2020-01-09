@@ -579,7 +579,7 @@ function convertChannel(pixels) {
     if (m_rotate.checked) {
         for (var x = 0; x <= pixLength-cw; x=x+cw) {
             // Pair modules are mirrored only if odd (ex. 11)
-            let isModuleImpair = (lineCount <= unitH && unitH % 2 == 0) ? 0 : 1;
+            let isModuleImpair = (lineCount <= unitH && unitH % 2) ? 0 : 1;
             // Invert pixels in pair lines for this Led matrix
             if (lineCount % 2 === isModuleImpair) {
                 let pixelsInvertedCopy = pixels.slice(x,x+cw);
