@@ -617,7 +617,7 @@ function convertChannel(pixels) {
         case 'bro888':
             hByte = [14,0,0,0,LSB,MSB];
         break;
-        case 'pix565'
+        case 'pix565':
             hByte = [80,cLSB,cMSB,LSB,MSB,1];
             bytesPerPixel = 2;
         break;
