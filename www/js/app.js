@@ -537,7 +537,7 @@ function sendUdp(bytesToPost) {
                 transmission.textContent = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
             });
         break;
-        case 'pixzip':
+        case 'pix565':
             compressed = flate.zlib_encode_raw(bytesToPost);
             t1 = performance.now();
             chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
@@ -545,7 +545,7 @@ function sendUdp(bytesToPost) {
                 transmission.className = (sendInfo.bytesSent>MTU) ? 'error' : 'white';
             });
         break;
-        case 'pix565':
+        case 'pixbro':
             compressed = compress(bytesToPost, bytesToPost.length, quality.value, lg_window_size);
             t1 = performance.now();
 
@@ -614,16 +614,19 @@ function convertChannel(pixels) {
         case 'rgb888':
             hByte = [1,0,0,0,LSB,MSB];
         break;
+        case 'rgb565':
+            hByte = [3,0,0,0,LSB,MSB];
+        break;
         case 'bro888':
             hByte = [14,0,0,0,LSB,MSB];
         break;
         case 'pix565':
-            hByte = [80,cLSB,cMSB,LSB,MSB,1];
+            hByte = [82,0,cLSB,cMSB,LSB,MSB];
             bytesPerPixel = 2;
         break;
         default:
             // 1: p  2: Chunk LSB  3: Chunk MSB  4: Length LSB  5: Length MSB  6: protocol (0 pixels)
-            hByte = [80,cLSB,cMSB,LSB,MSB,0];
+            hByte = [80,0,cLSB,cMSB,LSB,MSB];
         break;
       }
 
@@ -644,7 +647,7 @@ function convertChannel(pixels) {
         g = Math.round(pixels[k][1]*v_brightness.value);
         b = Math.round(pixels[k][2]*v_brightness.value);
 
-        if (protocol.value === 'pix565') {
+        if (protocol.value === 'pix565' || protocol.value === 'rgb565') {
         // 565
         let rgbsum = Math.round(b/8)+Math.round(g/4)*32+Math.round(r/8)*2048;
         let first565 = Math.round(rgbsum/256);
