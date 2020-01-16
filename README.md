@@ -63,6 +63,7 @@ Note that the data flow on the horizontal lines on most of this panels is like t
 2. <-- left (pixels in this one should be reversed before sending)
 3. --> and so on.
 
+```
     IN_______  1st Led Matrix
     ->|      | Row 1 ->
       |______| Row 2 <-
@@ -70,6 +71,7 @@ Note that the data flow on the horizontal lines on most of this panels is like t
     IN_______  2nd Led Matrix
     ->|      | Row 1 ->
       |______| Row 2 <-
+```
 
 So this App takes care of doing the sort(2) in your client before sending the bytes. It supports only this data flow at the moment, and stacking Led Matrixes one below the other, so if you are planning to build a video wall using linear Led stripes make sure to follow suit.
 Is actually the most easy way to do it, otherwise you should wire the data from right corner on every end of line to the left of the next one, so for simplicity is done this way. Make sure that in the Led Matrix you adquire the data flows horizontally in the larger width (Ex. 44 width, 11 height)
