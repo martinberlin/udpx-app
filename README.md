@@ -9,6 +9,7 @@
 2. Send over the air Video frames. 
 
 Note that Remora supports only plain Pixels without any compression. udpx supports zlib and brotli as compression algorithms.
+Up to 1000 RGB pixels. The ESP32 has a maximum transport unit (MTU) of 1470 bytes and we are not doing buffering on the Firmware side, so using Zlib or Brotli compression 1000 pixels is the limit where you can still get a decent framerate.
 
 ## Android App latest builds
 
@@ -29,10 +30,13 @@ To accomplish that mission the ESP32 controllers should be running our UDPX Firm
 Protocols supported:
 
    * Pixels
-   * RGB888
+   * PIX565 (uses 2 bytes per pixel) Needs udpx Firmware in latest version [on feature/16-pix565 branch](https://github.com/martinberlin/udpx/tree/feature/16-pix565)
+   * RGB565
    * BRO888
+   
+Last two are meant to be used with [OctoWiFi](https://github.com/spectrenoir06/OctoWifi-LEDs-Controller) Led controller Firmware. 
 
-iOS /iPad version is comming soon, also a Windows/Linux build, if you want to use it on your PC.
+iOS /iPad version is not going to see the light at least this year. I'm reluctant to buy a Mac just for this, so anyone taking the task is greatly welcome. 
 If you need any other platform, feel free to clone this, and make it your own. To check upcoming features just open the [Issues board](https://github.com/martinberlin/udpx-app/issues).
 
 ## Dependencies
@@ -45,27 +49,31 @@ https://github.com/don/cordova-plugin-ble-central
 
 This is a companion App to send binary data via WiFi to ESP32 Led controllers. To compile the Firmware please refer to:
 
-[UDPX Firmware in github](https://github.com/martinberlin/udpx/tree/develop)
+[udpx Firmware in github](https://github.com/martinberlin/udpx)
 
 We use PlatformIO as a Visual Code IDE to upload this into the Espressif chip and we recommend to compile it this way.
 
 ## UDPX recommended Hardware to display video
 
 The firmware supports any RGB addressable leds to do this (WS2812B or similar). A practical way to display video is to adquire a Led Matrix that comes already built.
-In Alixpress there is a firma called BTF-Lighting that has awesome 22x22 or 44x11 panels that offer 484 RGB pixels each:
+Please check our [hardware buying guide](https://github.com/martinberlin/udpx/wiki/Hardware-buying-guide) before buying the gear to build a Led Matrix.
+Note that the data flow on the horizontal lines on most of this panels is like this:
 
-1. https://www.aliexpress.com/item/32945260788.html
-2. https://www.amazon.com/BTF-LIGHTING-0-48ft0-48ft-Flexible-Individually-addressable/dp/B01DC0IOCK/
-
-In Amazon you can find this too, but not so big, and probably more expensive. Note that the data flow on the horizontal lines on most of this panels is like this:
-
-1. --> right
+1. --> right. This is important the data IN should be on the top left of the Led Matrix and flow down
 2. <-- left (pixels in this one should be reversed before sending)
 3. --> and so on.
 
-So this App takes care of doing the sort in your client before sending the bytes. It supports only this data flow at the moment, so if you are planning to build a video wall using linear Led stripes make sure to follow suit.
-Is actually the most easy way to do it, otherwise you should wire the data from right corner on every end of line to the left of the next one, so for simplicity is done this way.
-Make sure to connect this properly to a proper 5V power supply (USB is ok for testing only) and the data wire on the middle to ESP32 GPIO 19 as specified in UDPX Firmware.
+    IN_______  1st Led Matrix
+    ->|      | Row 1 ->
+      |______| Row 2 <-
+            -> OUT connected to IN in 2nd
+    IN_______  2nd Led Matrix
+    ->|      | Row 1 ->
+      |______| Row 2 <-
+
+So this App takes care of doing the sort(2) in your client before sending the bytes. It supports only this data flow at the moment, and stacking Led Matrixes one below the other, so if you are planning to build a video wall using linear Led stripes make sure to follow suit.
+Is actually the most easy way to do it, otherwise you should wire the data from right corner on every end of line to the left of the next one, so for simplicity is done this way. Make sure that in the Led Matrix you adquire the data flows horizontally in the larger width (Ex. 44 width, 11 height)
+This App reads the canvas horizontally, from top-left to right, and streams like this to the Firmware without making any rearranging except of inversing the pair lines. The udpx Firware does not have a clue of what Matrix you use, it just pushes next UDP packet after processing via Neopixels to the Led. 
 
 ## Licensing
 
