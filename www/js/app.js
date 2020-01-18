@@ -24,7 +24,7 @@ let ip = d.getElementById('esp32_ip'),
     wifi_pass = d.getElementById('wifi_pass'),
     wifi_msg = d.getElementById('wifi_msg'),
     wifi_pre = d.getElementById('wifi_pre');
-let adv_invert;
+let adv_invert = 0;
 let socketId, ble_id, ble_type, ble_name, ble_mac = '', ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
@@ -57,7 +57,7 @@ if (!Object.entries) {
 
 // DOMContentLoaded   -> deviceready for cordova
 d.addEventListener('deviceready', function(){
-
+    loadFormState();
     let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
@@ -76,7 +76,6 @@ d.addEventListener('deviceready', function(){
     zeroconf.watchAddressFamily = 'ipv4';
 
     // Start - EventListeners
-    loadFormState()
     d.getElementById('main-form').onchange = function() {
         saveFormState();
     };
@@ -85,12 +84,15 @@ d.addEventListener('deviceready', function(){
       openSocket();
     }
     m_invert_unit.onchange = function() {
+       saveFormState();
       if (m_invert_unit.checked) {
         adv_invert = -1;
        } else {
         adv_invert = 0;
       }
     }
+    o_chunk.onchange = function() { saveFormState(); }
+    m_rotate_lines.onchange = function() { saveFormState(); }
     // Send udp message
     d.getElementById('send_udp').onclick = function() {
         if (validateIp(ip.value, true)) {
@@ -814,9 +816,16 @@ function loadFormState() {
         }
     }
     dropdownSet(protocol, storage.getItem('protocol'));
-    o_chunk.checked = storage.getItem('o_chunk');
-    m_rotate_lines.checked = storage.getItem('m_rotate_lines');
-    m_invert_unit.checked = storage.getItem('m_invert_unit');
+    if (storage.getItem('o_chunk') === 'true') {
+       o_chunk.setAttribute('checked', 'checked');
+    };
+    if (storage.getItem('m_rotate_lines') === 'true') {
+       m_rotate_lines.setAttribute('checked', 'checked');
+    };
+    if (storage.getItem('m_invert_unit') === 'true') {
+       m_invert_unit.setAttribute('checked', 'checked');
+       adv_invert = -1;
+    };
 }
 
 function cleanTransmission(){
