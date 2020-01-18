@@ -1,4 +1,4 @@
-let VERSION = '1.1.255';
+let VERSION = '1.1.26';
 
 let d = document;
 let v = d.getElementById('video');
@@ -537,7 +537,7 @@ function sendUdp(bytesToPost) {
                 transmission.textContent = sendInfo.bytesSent+" Brotli bytes in "+Math.round(t1-t0)+" ms.";
             });
         break;
-        case 'pixzip':
+        case 'pix565':
             compressed = flate.zlib_encode_raw(bytesToPost);
             t1 = performance.now();
             chrome.sockets.udp.send(socketId, compressed.buffer, ip.value, parseInt(port.value), function(sendInfo) {
@@ -607,39 +607,59 @@ function convertChannel(pixels) {
         cLSB = chunk_size - (cMSB*256);
     }
 
-    headerBytes = 6;
+    let headerBytes = 6;
+    let bytesPerPixel = 3;
     // Header bytes 
     switch (protocol.value) {
         case 'rgb888':
             hByte = [1,0,0,0,LSB,MSB];
         break;
+        case 'rgb565':
+            hByte = [3,0,0,0,LSB,MSB];
+        break;
         case 'bro888':
             hByte = [14,0,0,0,LSB,MSB];
         break;
+        case 'pix565':
+            hByte = [82,0,cLSB,cMSB,LSB,MSB];
+            bytesPerPixel = 2;
+        break;
         default:
-            // 1: p  2: Non used  3 Channel   4 Length LSB   5 Length MSB
-            hByte = [80,cLSB,cMSB,LSB,MSB];
-            headerBytes = 5;
+            // 1: p  2: Chunk LSB  3: Chunk MSB  4: Length LSB  5: Length MSB  6: protocol (0 pixels)
+            hByte = [80,0,cLSB,cMSB,LSB,MSB];
         break;
       }
 
-    let bufferLen = (pixLength*3)+headerBytes;
+    let bufferLen = (pixLength*bytesPerPixel)+headerBytes;
     // create an ArrayBuffer with a size in bytes
     var buffer = new ArrayBuffer(bufferLen);
     var bytesToPost = new Uint8Array(buffer); 
     bi = 0;
     bytesToPost[bi] = hByte[0];bi++;  // p
-    bytesToPost[bi] = hByte[1];bi++;  // Future features (not used)
-    bytesToPost[bi] = hByte[2];bi++;  // unsigned 8-bit LED channel number
-    bytesToPost[bi] = hByte[3];bi++;  // count(pixels) 16 bit, next too
-    bytesToPost[bi] = hByte[4];bi++;  // Second part of count(pixels) not used here for now
-  if (protocol.value === 'rgb888') {
-    bytesToPost[bi] = hByte[5];bi++;
-  }
+    bytesToPost[bi] = hByte[1];bi++;  // chunk (16 bit)
+    bytesToPost[bi] = hByte[2];bi++;  //
+    bytesToPost[bi] = hByte[3];bi++;  // count(pixels) 16 bit
+    bytesToPost[bi] = hByte[4];bi++;  //
+    bytesToPost[bi] = hByte[5];bi++;  // protocol
+    let r,g,b;
     for (var k = 0; k < pixLength; k++) {
-        bytesToPost[bi] = Math.round(pixels[k][0]*v_brightness.value);bi++;
-        bytesToPost[bi] = Math.round(pixels[k][1]*v_brightness.value);bi++;
-        bytesToPost[bi] = Math.round(pixels[k][2]*v_brightness.value);bi++;
+        r = Math.round(pixels[k][0]*v_brightness.value);
+        g = Math.round(pixels[k][1]*v_brightness.value);
+        b = Math.round(pixels[k][2]*v_brightness.value);
+
+        if (protocol.value === 'pix565' || protocol.value === 'rgb565') {
+        // 565
+        let rgbsum = Math.round(b/8)+Math.round(g/4)*32+Math.round(r/8)*2048;
+        let first565 = Math.round(rgbsum/256);
+        bytesToPost[bi] = first565;bi++;
+        bytesToPost[bi] = Math.round(rgbsum-first565*256);bi++;
+
+        } else {
+        // pixels
+        bytesToPost[bi] = r;bi++;
+        bytesToPost[bi] = g;bi++;
+        bytesToPost[bi] = b;bi++;
+        }
     }
 
     if (!isSocketOpen) {
