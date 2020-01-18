@@ -527,7 +527,7 @@ d.addEventListener('deviceready', function(){
     d.getElementById('v-open').addEventListener('click', function () {
         navigator.camera.getPicture(cameraApp.start, cameraApp.error, cameraConfig)
     });
-    d.getElementById('version').innerText = VERSION;
+    d.getElementById('version').innerText = "App version:"+VERSION;
 },false);
 
 function sendUdp(bytesToPost) {
