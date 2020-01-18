@@ -1,4 +1,4 @@
-let VERSION = '1.1.26';
+let VERSION = '1.1.3';
 
 let d = document;
 let v = d.getElementById('video');
@@ -13,7 +13,9 @@ let ip = d.getElementById('esp32_ip'),
     video_c = d.getElementById('video-c'), o_chunk_label = d.getElementById('o_chunk_label'),
     video_select = d.getElementById('video_select'), o_chunk_pre = "Set header chunk size to ",
     millis_frame = d.getElementById('millis_frame'), fps = d.getElementById('fps'),
-    protocol = d.getElementById('protocol'), m_rotate = d.getElementById('m_rotate_lines'),
+    protocol = d.getElementById('protocol'),
+    m_rotate_lines = d.getElementById('m_rotate_lines'),
+    m_invert_unit = d.getElementById('m_invert_unit'),
     transmission = d.getElementById('transmission'),
     quality = d.getElementById('bro_quality'),
     v_brightness = d.getElementById('v_brightness'),
@@ -22,6 +24,7 @@ let ip = d.getElementById('esp32_ip'),
     wifi_pass = d.getElementById('wifi_pass'),
     wifi_msg = d.getElementById('wifi_msg'),
     wifi_pre = d.getElementById('wifi_pre');
+let adv_invert;
 let socketId, ble_id, ble_type, ble_name, ble_mac = '', ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
@@ -81,7 +84,13 @@ d.addEventListener('deviceready', function(){
     if (validateIp(ip.value, true)) {
       openSocket();
     }
-
+    m_invert_unit.onchange = function() {
+      if (m_invert_unit.checked) {
+        adv_invert = -1;
+       } else {
+        adv_invert = 0;
+      }
+    }
     // Send udp message
     d.getElementById('send_udp').onclick = function() {
         if (validateIp(ip.value, true)) {
@@ -576,13 +585,13 @@ function convertChannel(pixels) {
     let lineCount = 1;
     let cw = parseInt(v_width.value);
 
-    if (m_rotate.checked) {
+    if (m_rotate_lines.checked) {
+        let invert = false;
+
         for (var x = 0; x <= pixLength-cw; x=x+cw) {
-            // Pair modules are mirrored only if odd (ex. 11)
-            let isModuleImpair = ((lineCount % unitH) && (unitH % 2)) ? 1 : 0;
 
             // Invert pixels in pair lines for this Led matrix
-            if (lineCount % 2 === isModuleImpair) {
+            if (invert) {
                 let pixelsInvertedCopy = pixels.slice(x,x+cw);
                 pixelsInvertedCopy.reverse();
 
@@ -592,8 +601,12 @@ function convertChannel(pixels) {
                     invIndex++
                 }
             }
+            if ((lineCount % unitH === adv_invert) === false) {
+              invert = !invert;
+            }
             lineCount++;
         }
+
     }
     
     let MSB = parseInt(pixLength/256);
@@ -784,6 +797,8 @@ function saveFormState() {
   storage.setItem('form', formJson);
   storage.setItem('protocol', protocol.value);
   storage.setItem('o_chunk', o_chunk.checked);
+  storage.setItem('m_rotate_lines', m_rotate_lines.checked);
+  storage.setItem('m_invert_unit', m_invert_unit.checked);
 }
   
 /**
@@ -800,6 +815,8 @@ function loadFormState() {
     }
     dropdownSet(protocol, storage.getItem('protocol'));
     o_chunk.checked = storage.getItem('o_chunk');
+    m_rotate_lines.checked = storage.getItem('m_rotate_lines');
+    m_invert_unit.checked = storage.getItem('m_invert_unit');
 }
 
 function cleanTransmission(){
