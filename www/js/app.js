@@ -1,4 +1,4 @@
-let VERSION = '1.1.341';
+let VERSION = '1.1.342';
 
 let d = document;
 let v = d.getElementById('video');
@@ -595,8 +595,7 @@ function convertChannel(pixels) {
             // Invert pixels in pair lines for this Led matrix
             if (invert) {
                 let pixelsInvertedCopy = pixels.slice(x,x+cw);
-                pixelsInvertedCopy.reverse();
-
+                reverse(pixelsInvertedCopy);
                 let invIndex = 0;
                 for (var inv = x; inv <= x+cw-1; inv++) {
                     pixels[inv] = pixelsInvertedCopy[invIndex];
@@ -898,4 +897,15 @@ function dropdownSet(selectObj, valueToSet) {
             return;
         }
     }
+}
+// Array.reverse but faster
+function reverse(array)
+{
+    let left = null, right = null;
+    for (left = 0, right = array.length - 1; left < right; left += 1, right -= 1) {
+        var temporary = array[left];
+        array[left] = array[right];
+        array[right] = temporary;
+    }
+    return array;
 }
