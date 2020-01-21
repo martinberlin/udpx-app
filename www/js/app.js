@@ -12,19 +12,18 @@ let ip = d.getElementById('esp32_ip'),
     v_units  = d.getElementById('v_units'), o_chunk = d.getElementById('o_chunk'),
     video_c = d.getElementById('video-c'), o_chunk_label = d.getElementById('o_chunk_label'),
     video_select = d.getElementById('video_select'), o_chunk_pre = "Set header chunk size to ",
-    millis_frame = d.getElementById('millis_frame'), fps = d.getElementById('fps'),
-    protocol = d.getElementById('protocol'),
+    protocol = d.getElementById('protocol'), fps = d.getElementById('fps'),
     m_rotate_lines = d.getElementById('m_rotate_lines'),
     m_invert_unit = d.getElementById('m_invert_unit'),
     transmission = d.getElementById('transmission'),
     quality = d.getElementById('bro_quality'),
-    v_brightness = d.getElementById('v_brightness'),
+    v_brightness = d.getElementById('v_brightness'), v_brightred = d.getElementById('v_brightred'),
     wifi_store = d.getElementById('wifi_store'),
     wifi_ssid = d.getElementById('wifi_ssid'),
     wifi_pass = d.getElementById('wifi_pass'),
     wifi_msg = d.getElementById('wifi_msg'),
     wifi_pre = d.getElementById('wifi_pre');
-let adv_invert = 0;
+let adv_invert = 0, millis_frame;
 let socketId, ble_id, ble_type, ble_name, ble_mac = '', ble_enabled = true;
 let cw = parseInt(v_width.value),
     ch = parseInt(v_height.value)*parseInt(v_units.value),
@@ -58,6 +57,8 @@ if (!Object.entries) {
 // DOMContentLoaded   -> deviceready for cordova
 d.addEventListener('deviceready', function(){
     loadFormState();
+    millis_frame = (fps.value>0) ? Math.round(1000/fps.value) : 0;
+
     let cameraConfig = {
       quality:50,
       destinationType: Camera.DestinationType.FILE_URI,
@@ -91,6 +92,8 @@ d.addEventListener('deviceready', function(){
         adv_invert = 0;
       }
     }
+    v_brightness.onchange = function() { saveFormState(); }
+    v_brightred.onchange = function() { saveFormState(); }
     o_chunk.onchange = function() { saveFormState(); }
     m_rotate_lines.onchange = function() { saveFormState(); }
     // Send udp message
@@ -483,10 +486,7 @@ d.addEventListener('deviceready', function(){
 
     // FPS <-> ms/Frame
     fps.onchange = function() {
-      millis_frame.value = (fps.value>0) ? Math.round(1000/fps.value) : 0;
-    }
-    millis_frame.onchange = function() {
-      fps.value = (millis_frame.value>0) ? Math.round(1000/millis_frame.value) : 0;
+      millis_frame = (fps.value>0) ? Math.round(1000/fps.value) : 0;
     }
 
     v.addEventListener('play', function(){
@@ -640,7 +640,7 @@ function convertChannel(pixels) {
         break;
         default:
             // 1: p  2: Chunk LSB  3: Chunk MSB  4: Length LSB  5: Length MSB  6: protocol (0 pixels)
-            hByte = [80,v_brightness.value,cLSB,cMSB,LSB,MSB];
+            hByte = [80,0,cLSB,cMSB,LSB,MSB];
         break;
       }
 
@@ -649,20 +649,19 @@ function convertChannel(pixels) {
     var buffer = new ArrayBuffer(bufferLen);
     var bytesToPost = new Uint8Array(buffer); 
     bi = 0;
-    bytesToPost[bi] = hByte[0];bi++;  // p
-    bytesToPost[bi] = hByte[1];bi++;  // chunk (16 bit)
-    bytesToPost[bi] = hByte[2];bi++;  //
-    bytesToPost[bi] = hByte[3];bi++;  // count(pixels) 16 bit
-    bytesToPost[bi] = hByte[4];bi++;  //
-    bytesToPost[bi] = hByte[5];bi++;  // protocol
+    bytesToPost[bi] = hByte[0];bi++;  // P 0x50 or R 0x52 pix565
+    bytesToPost[bi] = hByte[1];bi++;  // Brightness (only pix565)
+    bytesToPost[bi] = hByte[2];bi++;  // chunk   L per channel
+    bytesToPost[bi] = hByte[3];bi++;  // chunk   M
+    bytesToPost[bi] = hByte[4];bi++;  // payload L
+    bytesToPost[bi] = hByte[5];bi++;  // payload M
     let r,g,b;
     for (var k = 0; k < pixLength; k++) {
-        r = Math.round(pixels[k][0]*0.5);
-        g = Math.round(pixels[k][1]*0.5);
-        b = Math.round(pixels[k][2]*0.5);
+        r = Math.round(pixels[k][0]*v_brightred.value);
+        g = Math.round(pixels[k][1]*v_brightred.value);
+        b = Math.round(pixels[k][2]*v_brightred.value);
 
         if (protocol.value === 'pix565' || protocol.value === 'rgb565') {
-        // 565
         let rgbsum = Math.round(b/8)+Math.round(g/4)*32+Math.round(r/8)*2048;
         let first565 = Math.round(rgbsum/256);
         bytesToPost[bi] = first565;bi++;
@@ -706,7 +705,7 @@ function draw(v,c,w,h) {
     } 
     convertChannel(pixels);
     
-    setTimeout(draw,millis_frame.value,v,c,w,h);
+    setTimeout(draw,millis_frame,v,c,w,h);
 }
 
 function drawImage(c,w,h) {
@@ -797,6 +796,8 @@ function saveFormState() {
   let formJson = JSON.stringify(data);
   storage.setItem('form', formJson);
   storage.setItem('protocol', protocol.value);
+  storage.setItem('v_brightness', v_brightness.value);
+  storage.setItem('v_brightred', v_brightred.value);
   storage.setItem('o_chunk', o_chunk.checked);
   storage.setItem('m_rotate_lines', m_rotate_lines.checked);
   storage.setItem('m_invert_unit', m_invert_unit.checked);
@@ -815,6 +816,8 @@ function loadFormState() {
         }
     }
     dropdownSet(protocol, storage.getItem('protocol'));
+    dropdownSet(v_brightness, storage.getItem('v_brightness'));
+    dropdownSet(v_brightred, storage.getItem('v_brightred'));
     if (storage.getItem('o_chunk') === 'true') {
        o_chunk.setAttribute('checked', 'checked');
     };
