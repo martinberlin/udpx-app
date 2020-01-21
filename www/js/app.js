@@ -1,4 +1,4 @@
-let VERSION = '1.1.342';
+let VERSION = '1.1.343';
 
 let d = document;
 let v = d.getElementById('video');
@@ -635,12 +635,12 @@ function convertChannel(pixels) {
             hByte = [14,0,0,0,LSB,MSB];
         break;
         case 'pix565':
-            hByte = [82,0,cLSB,cMSB,LSB,MSB];
+            hByte = [82,v_brightness.value,cLSB,cMSB,LSB,MSB];
             bytesPerPixel = 2;
         break;
         default:
             // 1: p  2: Chunk LSB  3: Chunk MSB  4: Length LSB  5: Length MSB  6: protocol (0 pixels)
-            hByte = [80,0,cLSB,cMSB,LSB,MSB];
+            hByte = [80,v_brightness.value,cLSB,cMSB,LSB,MSB];
         break;
       }
 
@@ -657,9 +657,9 @@ function convertChannel(pixels) {
     bytesToPost[bi] = hByte[5];bi++;  // protocol
     let r,g,b;
     for (var k = 0; k < pixLength; k++) {
-        r = Math.round(pixels[k][0]*v_brightness.value);
-        g = Math.round(pixels[k][1]*v_brightness.value);
-        b = Math.round(pixels[k][2]*v_brightness.value);
+        r = Math.round(pixels[k][0]*0.5);
+        g = Math.round(pixels[k][1]*0.5);
+        b = Math.round(pixels[k][2]*0.5);
 
         if (protocol.value === 'pix565' || protocol.value === 'rgb565') {
         // 565
