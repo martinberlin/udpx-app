@@ -662,10 +662,10 @@ function convertChannel(pixels) {
         b = Math.round(pixels[k][2]*v_brightred.value);
 
         if (protocol.value === 'pix565' || protocol.value === 'rgb565') {
-        let rgbsum = Math.round(b/8)+Math.round(g/4)*32+Math.round(r/8)*2048;
-        let first565 = Math.round(rgbsum/256);
+        let rgbsum = parseInt(b/8) + parseInt(g/4) *32 + parseInt(r/8) *2048;
+	let first565 = parseInt(rgbsum/256);
         bytesToPost[bi] = first565;bi++;
-        bytesToPost[bi] = Math.round(rgbsum-first565*256);bi++;
+        bytesToPost[bi] = parseInt(rgbsum-(first565*256));bi++;
 
         } else {
         // pixels
