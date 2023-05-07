@@ -14,7 +14,7 @@
   "author": "martin@luckycloud.de",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^8.1.0",
+    "cordova-android": "^11.0.0",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-ble-central": "^1.2.4",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
